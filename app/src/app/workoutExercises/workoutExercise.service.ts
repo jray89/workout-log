@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-import { WorkoutExercise } from './workoutExercise.interface';
+import { WorkoutExercise, WorkoutExerciseSet } from './workoutExercise.interface';
 
 import { environment } from '../../environments/environment';
 
@@ -37,5 +37,10 @@ export class WorkoutExerciseService {
   updateWorkoutExercise(workoutExercise: WorkoutExercise): Observable<Object> {
     const headers = new HttpHeaders().set('Content-Type', 'application/json; charset=UTF-8');
     return this.http.put(`${environment.api}/workoutExercise/update.php`, workoutExercise, { headers });
+  }
+
+  updateWorkoutExerciseSet(workoutExerciseSet: WorkoutExerciseSet): Observable<Object> {
+    const headers = new HttpHeaders().set('Content-Type', 'application/json; charset=UTF-8');
+    return this.http.put(`${environment.api}/workoutExerciseSet/update.php`, workoutExerciseSet, { headers });
   }
 }

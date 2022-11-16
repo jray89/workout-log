@@ -51,5 +51,13 @@ export class WorkoutExercisesComponent implements OnInit {
     if (workoutExercise.repGoal) {
       set.reps = set.reps === 0 ? workoutExercise.repGoal : set.reps - 1;
     }
+
+    this.workoutExerciseService.updateWorkoutExerciseSet(set).subscribe((result: any) => {
+      if (result.success) {
+        console.log('yay');
+      } else {
+        console.log('boo');
+      }
+    })
   }
 }
