@@ -5,7 +5,7 @@ import { WorkoutExercise } from '../workoutExercise.interface';
 import { WorkoutExerciseService } from '../workoutExercise.service';
 import { Exercise } from '../../exercises/exercise.interface';
 import { ExerciseService } from '../../exercises/exercise.service';
-import { FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-workoutExercise-details',
@@ -20,19 +20,19 @@ export class WorkoutExerciseDetailsComponent implements OnInit {
   isNew: boolean = false;
   loaded: boolean = false;
 
-  workoutExerciseForm = new FormGroup({
-    id: new FormControl(''),
-    userId: new FormControl(''),
-    workoutId: new FormControl(''),
-    stepNumber: new FormControl(''),
-    exerciseId: new FormControl(''),
-    weightGoal: new FormControl(''),
-    timeGoal: new FormControl(''),
-    setGoal: new FormControl(''),
-    repGoal: new FormControl(''),
-    notes: new FormControl(''),
-    modified: new FormControl(''),
-    created: new FormControl('')
+  workoutExerciseForm = new UntypedFormGroup({
+    id: new UntypedFormControl(''),
+    userId: new UntypedFormControl(''),
+    workoutId: new UntypedFormControl(''),
+    stepNumber: new UntypedFormControl(''),
+    exerciseId: new UntypedFormControl(''),
+    weightGoal: new UntypedFormControl(''),
+    timeGoal: new UntypedFormControl(''),
+    setGoal: new UntypedFormControl(''),
+    repGoal: new UntypedFormControl(''),
+    notes: new UntypedFormControl(''),
+    modified: new UntypedFormControl(''),
+    created: new UntypedFormControl('')
   });
 
   constructor(private loadingService: LoadingService, private workoutExerciseService: WorkoutExerciseService, private exerciseService: ExerciseService, private route: ActivatedRoute) {
