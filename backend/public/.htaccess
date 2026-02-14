@@ -1,0 +1,37 @@
+# React Router fallback configuration
+# This ensures that client-side routing works correctly
+# Place this file in backend/public/ directory
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Don't rewrite files or directories that exist
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+
+  # Don't rewrite API calls - let Rails handle them
+  RewriteCond %{REQUEST_URI} !^/api/
+
+  # Don't rewrite health check endpoint
+  RewriteCond %{REQUEST_URI} !^/up
+
+  # Don't rewrite Rails assets
+  RewriteCond %{REQUEST_URI} !^/assets/
+
+  # Fallback to index.html for all other routes (React Router)
+  RewriteRule ^ index.html [L]
+</IfModule>
+
+# Optional: Set cache headers for static assets
+<IfModule mod_headers.c>
+  # Cache CSS, JS, and images for 1 year
+  <FilesMatch "\.(css|js|jpg|jpeg|png|gif|svg|ico|woff|woff2|ttf|eot)$">
+    Header set Cache-Control "public, max-age=31536000"
+  </FilesMatch>
+
+  # Don't cache index.html
+  <FilesMatch "index\.html$">
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+  </FilesMatch>
+</IfModule>
