@@ -17,7 +17,6 @@ module Api
 
       def create
         session = current_user.workout_sessions.new(session_params)
-        session.started_at = Time.current
 
         if session.save
           render json: session_json(session), status: :created
@@ -41,8 +40,7 @@ module Api
 
       def duplicate
         new_session = current_user.workout_sessions.new(
-          name: @workout_session.name,
-          started_at: Time.current
+          name: @workout_session.name
         )
 
         if new_session.save
@@ -86,7 +84,6 @@ module Api
           id: session.id,
           name: session.name,
           notes: session.notes,
-          started_at: session.started_at,
           completed_at: session.completed_at,
           pinned: session.pinned,
           created_at: session.created_at,

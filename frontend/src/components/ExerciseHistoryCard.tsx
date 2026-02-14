@@ -35,10 +35,10 @@ export function ExerciseHistoryCard({ exerciseId }: ExerciseHistoryCardProps) {
   if (loading) {
     return (
       <Card className='hidden md:block'>
-        <CardHeader className='p-4 pb-2'>
+        <CardHeader>
           <CardTitle className='text-base'>Progress</CardTitle>
         </CardHeader>
-        <CardContent className='p-4 pt-2'>
+        <CardContent>
           <div className='h-48 flex items-center justify-center text-sm text-muted-foreground'>
             Loading...
           </div>
@@ -50,10 +50,10 @@ export function ExerciseHistoryCard({ exerciseId }: ExerciseHistoryCardProps) {
   if (history.length === 0) {
     return (
       <Card className='hidden md:block'>
-        <CardHeader className='p-4 pb-2'>
+        <CardHeader>
           <CardTitle className='text-base'>Progress</CardTitle>
         </CardHeader>
-        <CardContent className='p-4 pt-2'>
+        <CardContent>
           <div className='h-48 flex items-center justify-center text-sm text-muted-foreground'>
             No history available
           </div>
@@ -83,12 +83,12 @@ export function ExerciseHistoryCard({ exerciseId }: ExerciseHistoryCardProps) {
 
   return (
     <Card className='hidden md:block'>
-      <CardHeader className='p-4 pb-2'>
+      <CardHeader>
         <CardTitle className='text-base'>
           Max Weight Progress: {maxWeight}lbs
         </CardTitle>
       </CardHeader>
-      <CardContent className='p-4 pt-2'>
+      <CardContent>
         <ChartContainer config={chartConfig}>
           <LineChart
             accessibilityLayer
@@ -100,15 +100,15 @@ export function ExerciseHistoryCard({ exerciseId }: ExerciseHistoryCardProps) {
           >
             <XAxis
               dataKey='date'
-              // tickLine={false}
-              // axisLine={false}
-              // tickMargin={8}
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
             />
             <YAxis
               dataKey='weight'
-              // tickLine={false}
-              // axisLine={false}
-              // tickMargin={8}
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
               width={24}
             />
             <ChartTooltip

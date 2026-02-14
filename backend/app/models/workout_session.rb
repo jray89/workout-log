@@ -6,5 +6,5 @@ class WorkoutSession < ApplicationRecord
 
   scope :pinned, -> { where(pinned: true) }
   scope :completed, -> { where.not(completed_at: nil) }
-  scope :in_progress, -> { where(completed_at: nil).where.not(started_at: nil) }
+  scope :in_progress, -> { where(completed_at: nil) }
 end

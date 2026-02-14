@@ -37,7 +37,7 @@ module Api
             # Only include if there's a max weight recorded
             if max_weight.present?
               {
-                date: session.started_at.to_date,
+                date: session.created_at.to_date,
                 max_weight: max_weight,
                 workout_session_id: session.id
               }

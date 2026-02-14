@@ -206,7 +206,7 @@ export function WorkoutPage() {
             </div>
           )}
           <p className='text-xs text-muted-foreground'>
-            {new Date(session.started_at).toLocaleDateString(undefined, {
+            {new Date(session.created_at).toLocaleDateString(undefined, {
               weekday: 'long',
               month: 'long',
               day: 'numeric',
@@ -263,7 +263,7 @@ export function WorkoutPage() {
 
       {showExercisePicker && (
         <Card className='mt-4'>
-          <CardHeader className='p-4 pb-2'>
+          <CardHeader>
             <div className='flex items-center justify-between'>
               <CardTitle className='text-base'>Add Exercise</CardTitle>
               <Button
@@ -288,7 +288,7 @@ export function WorkoutPage() {
               />
             </div>
           </CardHeader>
-          <CardContent className='max-h-80 overflow-y-auto p-4 pt-2'>
+          <CardContent className='max-h-80 overflow-y-auto'>
             {Object.entries(groupedExercises).map(([group, exs]) => (
               <div key={group} className='mb-3'>
                 <p className='mb-1 text-xs font-semibold uppercase text-muted-foreground'>

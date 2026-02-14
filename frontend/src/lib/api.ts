@@ -165,7 +165,6 @@ export interface WorkoutSession {
   id: number;
   name: string | null;
   notes: string | null;
-  started_at: string;
   completed_at: string | null;
   pinned: boolean;
   created_at: string;

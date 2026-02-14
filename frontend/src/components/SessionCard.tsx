@@ -31,14 +31,14 @@ export function SessionCard({
       className='cursor-pointer transition-colors hover:bg-accent/50'
       onClick={() => onOpen(session.id)}
     >
-      <CardHeader className='p-4 pb-2'>
+      <CardHeader>
         <div className='flex items-start justify-between'>
           <div className='min-w-0 flex-1'>
             <CardTitle className='text-base'>
               {session.name || 'Untitled Workout'}
             </CardTitle>
             <p className='text-xs text-muted-foreground'>
-              {new Date(session.started_at).toLocaleDateString(undefined, {
+              {new Date(session.created_at).toLocaleDateString(undefined, {
                 weekday: 'short',
                 month: 'short',
                 day: 'numeric',
@@ -75,12 +75,10 @@ export function SessionCard({
           </div>
         </div>
       </CardHeader>
-      <CardContent className='p-4 pt-0'>
+      <CardContent>
         <div className='flex flex-wrap gap-1'>
           {isCompleted && <Badge variant='secondary'>Completed</Badge>}
-          {!isCompleted && session.started_at && (
-            <Badge variant='outline'>In Progress</Badge>
-          )}
+          {!isCompleted && <Badge variant='outline'>In Progress</Badge>}
           {totalSets > 0 && (
             <Badge variant='secondary'>
               {totalSets} {totalSets === 1 ? 'set' : 'sets'}

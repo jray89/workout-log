@@ -78,7 +78,7 @@ export function ExerciseCard({
 
   return (
     <Card>
-      <CardHeader className='p-4 pb-2'>
+      <CardHeader>
         <div className='flex items-center justify-between'>
           <div>
             <CardTitle className='text-base'>{wse.exercise.name}</CardTitle>
@@ -103,7 +103,7 @@ export function ExerciseCard({
           )}
         </div>
       </CardHeader>
-      <CardContent className='p-4 pt-2'>
+      <CardContent>
         {wse.sets.length > 0 && (
           <div className='mb-2'>
             <div className='grid grid-cols-[2rem_1fr_1fr_2rem_2rem] gap-2 text-xs font-medium text-muted-foreground mb-1'>
@@ -128,9 +128,7 @@ export function ExerciseCard({
                   onChange={(e) =>
                     updateLocalValue(set.id, 'weight', e.target.value)
                   }
-                  onBlur={(e) =>
-                    handleBlur(set.id, 'weight', e.target.value)
-                  }
+                  onBlur={(e) => handleBlur(set.id, 'weight', e.target.value)}
                   disabled={disabled}
                   className='h-8 text-sm'
                 />
@@ -141,9 +139,7 @@ export function ExerciseCard({
                   onChange={(e) =>
                     updateLocalValue(set.id, 'reps', e.target.value)
                   }
-                  onBlur={(e) =>
-                    handleBlur(set.id, 'reps', e.target.value)
-                  }
+                  onBlur={(e) => handleBlur(set.id, 'reps', e.target.value)}
                   disabled={disabled}
                   className='h-8 text-sm'
                 />
