@@ -1,0 +1,28 @@
+# Git
+.git
+.gitignore
+
+# Frontend
+frontend/node_modules
+frontend/dist
+
+# Backend
+backend/.bundle
+backend/log
+backend/tmp
+backend/storage
+backend/.env*
+backend/config/master.key
+backend/config/credentials/*.key
+backend/.dockerignore
+
+# Development
+.vscode
+.idea
+
+# Documentation
+*.md
+
+# Railway/Deployment configs (we don't need these in the image)
+railway.json
+.gitattributes
