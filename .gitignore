@@ -1,0 +1,42 @@
+# Backend
+backend/tmp/
+backend/log/
+backend/storage/
+backend/db/*.sqlite3
+backend/db/*.sqlite3-*
+backend/config/master.key
+backend/config/credentials/*.key
+
+# ⚠️ CRITICAL: Environment files with secrets
+backend/.env.production
+backend/.env.local
+backend/.env*.local
+.env.production
+.env.local
+.env*.local
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+
+# Deployment packages
+deployment-*.tar.gz
+deployment-*/
+
+# OS
+.DS_Store
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Note: DEPLOYMENT.md and SECURITY.md are now safe to commit
+DEPLOYMENT.md
+RAILWAY_DEPLOYMENT.md
+SECURITY.md
+scripts/deploy-cpanel.md
+scripts/prepare-deployment.sh
+scripts/prepare-railway.sh

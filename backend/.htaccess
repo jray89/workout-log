@@ -1,0 +1,26 @@
+# Passenger configuration for cPanel Rails deployment
+# Place this file in the Rails app root directory
+
+# Enable Passenger
+PassengerEnabled on
+
+# Set Ruby version (adjust based on cPanel's available Ruby versions)
+# Check available versions in cPanel: Setup Ruby App
+PassengerRuby /usr/bin/ruby
+
+# Set application environment to production
+PassengerAppEnv production
+
+# Set the application root (adjust path for your cPanel username)
+# Example: /home/username/workout-log/backend
+PassengerAppRoot /home/USERNAME/workout-log/backend
+
+# Set the startup file
+PassengerStartupFile config.ru
+
+# Optional: Set minimum and maximum instances
+# PassengerMinInstances 1
+# PassengerMaxPoolSize 6
+
+# Optional: Restart the application by touching this file
+# touch tmp/restart.txt
