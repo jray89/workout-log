@@ -1,14 +1,10 @@
 {
   "$schema": "https://railway.app/railway.schema.json",
   "build": {
-    "builder": "NIXPACKS",
-    "buildCommand": "cd backend && bundle install --without development test",
-    "watchPatterns": [
-      "backend/**"
-    ]
+    "buildCommand": "cd frontend && npm install && npm run build && mkdir -p ../backend/public && cp -r dist/* ../backend/public/ && cd ../backend && bundle install --without development test"
   },
   "deploy": {
-    "startCommand": "cd backend && bundle exec puma -C config/puma.rb",
+    "startCommand": "cd backend && bundle exec rails db:migrate && bundle exec puma -C config/puma.rb",
     "healthcheckPath": "/up",
     "healthcheckTimeout": 100,
     "restartPolicyType": "ON_FAILURE",
