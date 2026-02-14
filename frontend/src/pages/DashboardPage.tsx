@@ -34,17 +34,24 @@ export function DashboardPage() {
     navigate(`/workout/${session.id}`);
   }
 
+  async function completeSession(id: number) {
+    const updated = await api.updateWorkoutSession(id, {
+      completed_at: new Date().toISOString(),
+    });
+    setSessions((prev) => prev.map((s) => (s.id === updated.id ? updated : s)));
+  }
+
   async function duplicateWorkout(id: number) {
     const session = await api.duplicateWorkoutSession(id);
     navigate(`/workout/${session.id}`);
   }
 
-  async function togglePin(session: WorkoutSession) {
-    const updated = await api.updateWorkoutSession(session.id, {
-      pinned: !session.pinned,
-    });
-    setSessions((prev) => prev.map((s) => (s.id === updated.id ? updated : s)));
-  }
+  // async function togglePin(session: WorkoutSession) {
+  //   const updated = await api.updateWorkoutSession(session.id, {
+  //     pinned: !session.pinned,
+  //   });
+  //   setSessions((prev) => prev.map((s) => (s.id === updated.id ? updated : s)));
+  // }
 
   async function deleteSession(id: number) {
     await api.deleteWorkoutSession(id);
@@ -58,7 +65,7 @@ export function DashboardPage() {
     <div className='mx-auto max-w-2xl p-4'>
       <div className='mb-6 flex items-center justify-between'>
         <div>
-          <h1 className='text-2xl font-bold'>Workout Log</h1>
+          <h1 className='text-2xl font-bold'>📋 Workout Log</h1>
         </div>
         <div className='flex items-center space-x-2'>
           <span className='text-sm text-muted-foreground'>{user?.name}</span>
@@ -85,8 +92,8 @@ export function DashboardPage() {
                   <SessionCard
                     key={session.id}
                     session={session}
+                    onComplete={completeSession}
                     onDuplicate={duplicateWorkout}
-                    onTogglePin={togglePin}
                     onDelete={deleteSession}
                     onOpen={(id) => navigate(`/workout/${id}`)}
                   />
@@ -107,8 +114,8 @@ export function DashboardPage() {
                   <SessionCard
                     key={session.id}
                     session={session}
+                    onComplete={completeSession}
                     onDuplicate={duplicateWorkout}
-                    onTogglePin={togglePin}
                     onDelete={deleteSession}
                     onOpen={(id) => navigate(`/workout/${id}`)}
                   />

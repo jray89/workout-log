@@ -26,7 +26,7 @@ module Api
           .completed
           .joins(:workout_session_exercises)
           .where(workout_session_exercises: { exercise_id: exercise.id })
-          .order(:completed_at)
+          .order(:created_at)
           .map do |session|
             # Find the workout_session_exercise for this exercise in this session
             wse = session.workout_session_exercises.find_by(exercise_id: exercise.id)
