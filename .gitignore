@@ -18,6 +18,7 @@ backend/.env*.local
 # Frontend
 frontend/node_modules/
 frontend/dist/
+backend/public/  # Built frontend files (generated during deployment)
 
 # Deployment packages
 deployment-*.tar.gz
