@@ -62,9 +62,7 @@ export function DashboardPage() {
           <h1 className='text-2xl font-bold'>Workout Log</h1>
         </div>
         <div className='flex items-center space-x-2'>
-          <span className='text-sm text-muted-foreground'>
-            Hey, {user?.name}
-          </span>
+          <span className='text-sm text-muted-foreground'>{user?.name}</span>
           <Button variant='ghost' size='icon' onClick={logout}>
             <LogOut className='h-5 w-5' />
           </Button>
