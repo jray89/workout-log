@@ -5,7 +5,9 @@ Rails.application.routes.draw do
       post "login", to: "auth#login"
       get "me", to: "auth#me"
 
-      resources :exercises, only: [ :index, :create ]
+      resources :exercises, only: [ :index, :create ] do
+        get :history, on: :member
+      end
 
       resources :workout_sessions, only: [ :index, :show, :create, :update, :destroy ] do
         post :duplicate, on: :member

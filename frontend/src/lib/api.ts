@@ -53,6 +53,9 @@ export const api = {
       body: JSON.stringify(data),
     }),
 
+  getExerciseHistory: (exerciseId: number) =>
+    request<ExerciseHistoryEntry[]>(`/exercises/${exerciseId}/history`),
+
   // Workout Sessions
   getWorkoutSessions: () => request<WorkoutSession[]>("/workout_sessions"),
 
@@ -167,4 +170,10 @@ export interface WorkoutSession {
   pinned: boolean;
   created_at: string;
   exercises: WorkoutSessionExercise[];
+}
+
+export interface ExerciseHistoryEntry {
+  date: string;
+  max_weight: number;
+  workout_session_id: number;
 }
