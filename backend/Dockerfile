@@ -47,6 +47,16 @@ RUN bundle install && \
 # Copy application code
 COPY . .
 
+# Install Node.js and build frontend
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install -y nodejs && \
+    cd ../frontend && \
+    npm install && \
+    npm run build && \
+    mkdir -p ../backend/public && \
+    cp -r dist/* ../backend/public/ && \
+    cd ../backend
+
 # Precompile bootsnap code for faster boot times.
 # -j 1 disable parallel compilation to avoid a QEMU bug: https://github.com/rails/bootsnap/issues/495
 RUN bundle exec bootsnap precompile -j 1 app/ lib/
