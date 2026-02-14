@@ -23,20 +23,7 @@ test:
 # Production uses PostgreSQL (automatically provided by Railway/Render)
 # DATABASE_URL environment variable will be set by the hosting platform
 production:
-  primary:
-    adapter: postgresql
-    encoding: unicode
-    pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-    url: <%= ENV['DATABASE_URL'] %>
-  cache:
-    adapter: postgresql
-    encoding: unicode
-    pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-    url: <%= ENV['CACHE_DATABASE_URL'] || ENV['DATABASE_URL'] %>
-    migrations_paths: db/cache_migrate
-  queue:
-    adapter: postgresql
-    encoding: unicode
-    pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-    url: <%= ENV['QUEUE_DATABASE_URL'] || ENV['DATABASE_URL'] %>
-    migrations_paths: db/queue_migrate
+  adapter: postgresql
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  url: <%= ENV['DATABASE_URL'] %>
