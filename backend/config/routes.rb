@@ -4,6 +4,16 @@ Rails.application.routes.draw do
       post "signup", to: "auth#signup"
       post "login", to: "auth#login"
       get "me", to: "auth#me"
+
+      resources :exercises, only: [ :index, :create ]
+
+      resources :workout_sessions, only: [ :index, :show, :create, :update, :destroy ] do
+        post :duplicate, on: :member
+
+        resources :workout_session_exercises, only: [ :create, :destroy ] do
+          resources :exercise_sets, only: [ :create, :update, :destroy ]
+        end
+      end
     end
   end
 
