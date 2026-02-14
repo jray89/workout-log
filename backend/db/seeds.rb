@@ -7,7 +7,7 @@ exercises = [
   { name: "Leg Press", muscle_group: "Legs", equipment: "Machine" },
   { name: "Leg Curl", muscle_group: "Legs", equipment: "Machine" },
   { name: "Calf Raise", muscle_group: "Legs", equipment: "Machine" },
-  { name: "Conventional Deadlift", muscle_group: "Back", equipment: "Barbell" },
+  { name: "Deadlift", muscle_group: "Back", equipment: "Barbell" },
   { name: "Barbell Row", muscle_group: "Back", equipment: "Barbell" },
   { name: "Pull Up", muscle_group: "Back", equipment: "Bodyweight" },
   { name: "Lat Pulldown", muscle_group: "Back", equipment: "Cable" },
@@ -19,6 +19,10 @@ exercises = [
   { name: "Dumbbell Curl", muscle_group: "Biceps", equipment: "Dumbbell" },
   { name: "Tricep Pushdown", muscle_group: "Triceps", equipment: "Cable" },
   { name: "Skull Crusher", muscle_group: "Triceps", equipment: "Barbell" },
+  { name: "Machine Chest Fly", muscle_group: "Chest", equipment: "Machine" },
+  { name: "Leg Extension", muscle_group: "Legs", equipment: "Machine" },
+  { name: "Hyperextension", muscle_group: "Back", equipment: "Machine" },
+  { name: "Cable Curl", muscle_group: "Biceps", equipment: "Cable" }, 
 ]
 
 exercises.each do |attrs|
