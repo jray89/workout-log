@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { api, type ExerciseHistoryEntry } from '@/lib/api';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { LineChart, Line, XAxis, CartesianGrid, YAxis } from 'recharts';
+import { LineChart, Line, XAxis, YAxis } from 'recharts';
 import {
   ChartContainer,
   ChartTooltip,
@@ -98,7 +98,6 @@ export function ExerciseHistoryCard({ exerciseId }: ExerciseHistoryCardProps) {
               right: 12,
             }}
           >
-            {/* <CartesianGrid vertical={false} /> */}
             <XAxis
               dataKey='date'
               // tickLine={false}
