@@ -22,6 +22,9 @@ import {
   Check,
 } from 'lucide-react';
 
+const MUSCLE_GROUPS = ['Chest', 'Back', 'Legs', 'Shoulders', 'Biceps', 'Triceps', 'Core', 'Other'];
+const EQUIPMENT_TYPES = ['Barbell', 'Dumbbell', 'Cable', 'Machine', 'Bodyweight', 'Other'];
+
 export function WorkoutPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -32,6 +35,11 @@ export function WorkoutPage() {
   const [loading, setLoading] = useState(true);
   const [isEditingName, setIsEditingName] = useState(false);
   const [editedName, setEditedName] = useState('');
+  const [showCreateForm, setShowCreateForm] = useState(false);
+  const [newExerciseName, setNewExerciseName] = useState('');
+  const [newExerciseMuscleGroup, setNewExerciseMuscleGroup] = useState('');
+  const [newExerciseEquipment, setNewExerciseEquipment] = useState('');
+  const [createError, setCreateError] = useState('');
 
   const fetchSession = useCallback(async () => {
     if (!id) return;
@@ -59,6 +67,26 @@ export function WorkoutPage() {
     await fetchSession();
     setShowExercisePicker(false);
     setSearchQuery('');
+  }
+
+  async function createCustomExercise() {
+    if (!session || !newExerciseName.trim()) return;
+    setCreateError('');
+    try {
+      const exercise = await api.createExercise({
+        name: newExerciseName.trim(),
+        muscle_group: newExerciseMuscleGroup || 'Other',
+        equipment: newExerciseEquipment || 'Other',
+      });
+      setExercises((prev) => [...prev, exercise]);
+      await addExercise(exercise.id);
+      setShowCreateForm(false);
+      setNewExerciseName('');
+      setNewExerciseMuscleGroup('');
+      setNewExerciseEquipment('');
+    } catch (err) {
+      setCreateError(err instanceof Error ? err.message : 'Failed to create exercise');
+    }
   }
 
   async function removeExercise(wseId: number) {
@@ -272,6 +300,11 @@ export function WorkoutPage() {
                 onClick={() => {
                   setShowExercisePicker(false);
                   setSearchQuery('');
+                  setShowCreateForm(false);
+                  setNewExerciseName('');
+                  setNewExerciseMuscleGroup('');
+                  setNewExerciseEquipment('');
+                  setCreateError('');
                 }}
               >
                 Cancel
@@ -289,7 +322,77 @@ export function WorkoutPage() {
             </div>
           </CardHeader>
           <CardContent className='max-h-80 overflow-y-auto'>
-            {Object.entries(groupedExercises).map(([group, exs]) => (
+            {showCreateForm ? (
+              <div className='space-y-3 pb-2'>
+                <Input
+                  placeholder='Exercise name'
+                  value={newExerciseName}
+                  onChange={(e) => setNewExerciseName(e.target.value)}
+                  autoFocus
+                />
+                <div className='grid grid-cols-2 gap-2'>
+                  <select
+                    value={newExerciseMuscleGroup}
+                    onChange={(e) => setNewExerciseMuscleGroup(e.target.value)}
+                    className='flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring'
+                  >
+                    <option value=''>Muscle group</option>
+                    {MUSCLE_GROUPS.map((g) => (
+                      <option key={g} value={g}>{g}</option>
+                    ))}
+                  </select>
+                  <select
+                    value={newExerciseEquipment}
+                    onChange={(e) => setNewExerciseEquipment(e.target.value)}
+                    className='flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring'
+                  >
+                    <option value=''>Equipment</option>
+                    {EQUIPMENT_TYPES.map((e) => (
+                      <option key={e} value={e}>{e}</option>
+                    ))}
+                  </select>
+                </div>
+                {createError && (
+                  <p className='text-sm text-destructive'>{createError}</p>
+                )}
+                <div className='flex gap-2'>
+                  <Button
+                    variant='outline'
+                    size='sm'
+                    className='flex-1'
+                    onClick={() => {
+                      setShowCreateForm(false);
+                      setNewExerciseName('');
+                      setNewExerciseMuscleGroup('');
+                      setNewExerciseEquipment('');
+                      setCreateError('');
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    size='sm'
+                    className='flex-1'
+                    disabled={!newExerciseName.trim()}
+                    onClick={createCustomExercise}
+                  >
+                    Create & Add
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <button
+                onClick={() => {
+                  setShowCreateForm(true);
+                  setNewExerciseName(searchQuery);
+                }}
+                className='mb-3 flex w-full items-center gap-2 rounded-md border border-dashed border-muted-foreground/30 px-2 py-2 text-sm text-muted-foreground hover:bg-accent hover:text-foreground'
+              >
+                <Plus className='h-4 w-4' />
+                Create new exercise{searchQuery ? `: "${searchQuery}"` : ''}
+              </button>
+            )}
+            {!showCreateForm && Object.entries(groupedExercises).map(([group, exs]) => (
               <div key={group} className='mb-3'>
                 <p className='mb-1 text-xs font-semibold uppercase text-muted-foreground'>
                   {group}
