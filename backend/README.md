@@ -41,9 +41,21 @@ All routes are under `/api/v1/`. Authentication required unless noted.
 | PATCH | `.../exercise_sets/:id` | Update set |
 | DELETE | `.../exercise_sets/:id` | Delete set |
 
+## Admin Users
+
+Users have an `admin` boolean flag (default `false`). Manage via rake tasks:
+
+```bash
+rake admin:grant[user@example.com]    # Promote to admin
+rake admin:revoke[user@example.com]   # Remove admin
+```
+
+The `require_admin!` method in `ApplicationController` can be used as a `before_action` to restrict actions to admins (returns 403). Auth responses (`/login`, `/signup`, `/me`) include the `admin` field.
+
 ## Key Patterns
 
 - **Auth**: JWT via `Authorization: Bearer <token>`. `ApplicationController#authenticate_user!` runs on all actions. Controllers skip it explicitly for public endpoints.
+- **Admin authorization**: `require_admin!` available as a `before_action` for admin-only endpoints (returns 403).
 - **Data isolation**: All queries scoped to `current_user` — users only see their own workout data. The exercise library is shared.
 - **Serialization**: Inline `*_json` helper methods in controllers (no serializer gem).
 - **Passwords**: bcrypt via `has_secure_password`.

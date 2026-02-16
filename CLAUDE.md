@@ -33,6 +33,10 @@ cd backend && rails db:migrate          # Run pending migrations
 cd backend && rails db:seed             # Seed exercise library
 cd backend && rails console             # Rails console
 
+# Admin
+cd backend && rake admin:grant[user@example.com]   # Make a user admin
+cd backend && rake admin:revoke[user@example.com]   # Remove admin
+
 # Frontend
 cd frontend && npm run dev              # Dev server with HMR
 cd frontend && npm run build            # Production build (tsc + vite)
@@ -57,11 +61,18 @@ All routes under `/api/v1/`:
 - CRUD `/workout_sessions` + `POST :duplicate`
 - Nested: `/workout_sessions/:id/workout_session_exercises` and `/exercise_sets`
 
+### Admin Users
+- `users.admin` boolean column (default `false`)
+- `require_admin!` method on `ApplicationController` — returns 403, use as `before_action` on admin-only actions
+- Rake tasks to manage admins: `rake admin:grant[email]` / `rake admin:revoke[email]`
+- Admin status included in auth responses (`user_json`) and available in frontend via `user.admin`
+
 ### Data Model
 ```
 User
   has_many :workout_sessions
   has_many :exercises (custom ones, via created_by_id)
+  admin: boolean (default false)
 
 Exercise (shared library + user-created custom exercises)
   belongs_to :created_by (User, optional)
@@ -100,7 +111,7 @@ Controllers use inline `*_json` helper methods (e.g. `session_json`, `user_json`
 - No serializer library — use inline `*_json` methods in controllers
 - Seeds only populate the built-in exercise library (not users)
 - Frontend uses Vite dev proxy (`/api` -> `localhost:3000`)
-- No role/permission system yet (planned — see plan.md)
+- Admin role via boolean flag on users — manage with `rake admin:grant[email]` / `rake admin:revoke[email]`
 
 ## Documentation
 When adding new features, update the relevant documentation files to keep them current:
