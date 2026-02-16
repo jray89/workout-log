@@ -1,24 +1,49 @@
-# README
+# Backend — Rails API
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Rails 8.1 API-only application serving the workout-log REST API.
 
-Things you may want to cover:
+## Setup
 
-* Ruby version
+```bash
+bundle install
+rails db:create db:migrate db:seed
+rails server  # http://localhost:3000
+```
 
-* System dependencies
+## Database
 
-* Configuration
+- **Dev/Test**: SQLite3 (stored in `storage/`)
+- **Production**: PostgreSQL via `DATABASE_URL` env var
 
-* Database creation
+Seeds populate the built-in exercise library (24 common exercises). Run `rails db:seed` — it's idempotent.
 
-* Database initialization
+## API Endpoints
 
-* How to run the test suite
+All routes are under `/api/v1/`. Authentication required unless noted.
 
-* Services (job queues, cache servers, search engines, etc.)
+| Method | Path | Description |
+|--------|------|-------------|
+| POST | `/signup` | Create account (no auth) |
+| POST | `/login` | Get JWT token (no auth) |
+| GET | `/me` | Current user info |
+| GET | `/exercises` | List all exercises |
+| POST | `/exercises` | Create custom exercise |
+| GET | `/exercises/:id/history` | Weight history for an exercise |
+| GET | `/workout_sessions` | List user's sessions |
+| POST | `/workout_sessions` | Create session |
+| GET | `/workout_sessions/:id` | Get session with exercises and sets |
+| PATCH | `/workout_sessions/:id` | Update session |
+| DELETE | `/workout_sessions/:id` | Delete session |
+| POST | `/workout_sessions/:id/duplicate` | Duplicate session structure |
+| POST | `/workout_sessions/:id/workout_session_exercises` | Add exercise to session |
+| DELETE | `/workout_sessions/:id/workout_session_exercises/:id` | Remove exercise |
+| POST | `.../workout_session_exercises/:id/exercise_sets` | Add set |
+| PATCH | `.../exercise_sets/:id` | Update set |
+| DELETE | `.../exercise_sets/:id` | Delete set |
 
-* Deployment instructions
+## Key Patterns
 
-* ...
+- **Auth**: JWT via `Authorization: Bearer <token>`. `ApplicationController#authenticate_user!` runs on all actions. Controllers skip it explicitly for public endpoints.
+- **Data isolation**: All queries scoped to `current_user` — users only see their own workout data. The exercise library is shared.
+- **Serialization**: Inline `*_json` helper methods in controllers (no serializer gem).
+- **Passwords**: bcrypt via `has_secure_password`.
