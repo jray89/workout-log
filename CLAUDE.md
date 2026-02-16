@@ -101,3 +101,10 @@ Controllers use inline `*_json` helper methods (e.g. `session_json`, `user_json`
 - Seeds only populate the built-in exercise library (not users)
 - Frontend uses Vite dev proxy (`/api` -> `localhost:3000`)
 - No role/permission system yet (planned — see plan.md)
+
+## Documentation
+When adding new features, update the relevant documentation files to keep them current:
+- **CLAUDE.md** (this file) — update Architecture, Data Model, API Structure, Frontend Structure, or Conventions sections as needed
+- **README.md** (root) — update if the tech stack, setup steps, or project structure change
+- **backend/README.md** — update the API endpoint table and Key Patterns when adding/changing endpoints
+- **frontend/README.md** — update the Project Structure and Key Patterns when adding new pages, components, or hooks
