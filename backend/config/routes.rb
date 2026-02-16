@@ -20,7 +20,4 @@ Rails.application.routes.draw do
   end
 
   get "up" => "rails/health#show", as: :rails_health_check
-
-  # SPA fallback — serve index.html for any non-API routes
-  get "*path", to: "fallback#index", constraints: ->(req) { !req.path.start_with?("/api/") }
 end
