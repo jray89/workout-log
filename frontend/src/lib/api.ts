@@ -134,6 +134,7 @@ export interface User {
   id: number;
   email: string;
   name: string;
+  admin: boolean;
 }
 
 export interface Exercise {

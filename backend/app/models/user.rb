@@ -8,4 +8,6 @@ class User < ApplicationRecord
   validates :name, presence: true
 
   normalizes :email, with: ->(email) { email.strip.downcase }
+
+  scope :admins, -> { where(admin: true) }
 end

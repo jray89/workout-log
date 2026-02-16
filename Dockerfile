@@ -31,6 +31,7 @@ RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y build-essential git libyaml-dev pkg-config && \
     curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
     apt-get install -y nodejs && \
+    npm install -g pnpm && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Install application gems
@@ -45,8 +46,8 @@ COPY backend/ .
 # Build frontend and copy to public
 COPY frontend/ /frontend
 RUN cd /frontend && \
-    npm install && \
-    npm run build && \
+    pnpm install && \
+    pnpm build && \
     mkdir -p /rails/public && \
     cp -r dist/* /rails/public/
 
