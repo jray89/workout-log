@@ -6,6 +6,7 @@ import {
   type Exercise,
   type WorkoutSessionExercise,
 } from '@/lib/api';
+import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -28,6 +29,7 @@ const EQUIPMENT_TYPES = ['Barbell', 'Dumbbell', 'Cable', 'Machine', 'Bodyweight'
 export function WorkoutPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [session, setSession] = useState<WorkoutSession | null>(null);
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [showExercisePicker, setShowExercisePicker] = useState(false);
@@ -381,16 +383,18 @@ export function WorkoutPage() {
                 </div>
               </div>
             ) : (
-              <button
-                onClick={() => {
-                  setShowCreateForm(true);
-                  setNewExerciseName(searchQuery);
-                }}
-                className='mb-3 flex w-full items-center gap-2 rounded-md border border-dashed border-muted-foreground/30 px-2 py-2 text-sm text-muted-foreground hover:bg-accent hover:text-foreground'
-              >
-                <Plus className='h-4 w-4' />
-                Create new exercise{searchQuery ? `: "${searchQuery}"` : ''}
-              </button>
+              user?.admin && (
+                <button
+                  onClick={() => {
+                    setShowCreateForm(true);
+                    setNewExerciseName(searchQuery);
+                  }}
+                  className='mb-3 flex w-full items-center gap-2 rounded-md border border-dashed border-muted-foreground/30 px-2 py-2 text-sm text-muted-foreground hover:bg-accent hover:text-foreground'
+                >
+                  <Plus className='h-4 w-4' />
+                  Create new exercise{searchQuery ? `: "${searchQuery}"` : ''}
+                </button>
+              )
             )}
             {!showCreateForm && Object.entries(groupedExercises).map(([group, exs]) => (
               <div key={group} className='mb-3'>
