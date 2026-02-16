@@ -20,8 +20,8 @@ rails server
 
 # Frontend (runs on :5173, proxies /api to :3000)
 cd frontend
-npm install
-npm run dev
+pnpm install
+pnpm dev
 ```
 
 ## Key Commands
@@ -38,9 +38,9 @@ cd backend && rake admin:grant[user@example.com]   # Make a user admin
 cd backend && rake admin:revoke[user@example.com]   # Remove admin
 
 # Frontend
-cd frontend && npm run dev              # Dev server with HMR
-cd frontend && npm run build            # Production build (tsc + vite)
-cd frontend && npm run lint             # ESLint
+cd frontend && pnpm dev                 # Dev server with HMR
+cd frontend && pnpm build               # Production build (tsc + vite)
+cd frontend && pnpm lint                # ESLint
 
 # Production build (copies frontend into backend/public/)
 ./scripts/build-frontend.sh

@@ -16,6 +16,7 @@ A personal workout tracking app for logging sessions, exercises, and sets with p
 ### Prerequisites
 - Ruby 3.3.6
 - Node.js 20+
+- pnpm
 - Bundler
 
 ### Getting Started
@@ -29,8 +30,8 @@ rails server
 
 # Frontend (http://localhost:5173)
 cd frontend
-npm install
-npm run dev
+pnpm install
+pnpm dev
 ```
 
 The Vite dev server proxies `/api` requests to the Rails server on port 3000.

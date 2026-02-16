@@ -5,8 +5,8 @@ React 19 + TypeScript single-page application built with Vite, Tailwind CSS, and
 ## Setup
 
 ```bash
-npm install
-npm run dev    # http://localhost:5173
+pnpm install
+pnpm dev    # http://localhost:5173
 ```
 
 The Vite dev server proxies `/api` requests to the Rails backend on `localhost:3000`.
@@ -15,10 +15,10 @@ The Vite dev server proxies `/api` requests to the Rails backend on `localhost:3
 
 | Command | Description |
 |---------|-------------|
-| `npm run dev` | Start dev server with HMR |
-| `npm run build` | TypeScript check + Vite production build |
-| `npm run lint` | Run ESLint |
-| `npm run preview` | Preview production build locally |
+| `pnpm dev` | Start dev server with HMR |
+| `pnpm build` | TypeScript check + Vite production build |
+| `pnpm lint` | Run ESLint |
+| `pnpm preview` | Preview production build locally |
 
 ## Project Structure
 
