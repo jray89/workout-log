@@ -9,10 +9,10 @@ echo "========================================"
 cd "$(dirname "$0")/../frontend"
 
 echo "Installing dependencies..."
-pnpm install
+npm install
 
 echo "Building production bundle..."
-pnpm build
+npm run build
 
 echo "Copying build to Rails public directory..."
 rm -rf ../backend/public/*
