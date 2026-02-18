@@ -62,24 +62,27 @@ export function DashboardPage() {
   const recentSessions = sessions.filter((s) => !s.pinned);
 
   return (
-    <div className='mx-auto max-w-2xl p-4'>
-      <div className='mb-6 flex items-center justify-between'>
-        <div>
-          <h1 className='text-2xl font-bold'>📋 Workout Log</h1>
+    <div className='mx-auto max-w-2xl'>
+      <div className='sticky top-0 z-10 border-b bg-background px-4 pb-4 pt-4'>
+        <div className='mb-4 flex items-center justify-between'>
+          <div>
+            <h1 className='text-2xl font-bold'>📋 Workout Log</h1>
+          </div>
+          <div className='flex items-center space-x-2'>
+            <span className='text-sm text-muted-foreground'>{user?.name}</span>
+            <Button variant='ghost' size='icon' onClick={logout}>
+              <LogOut className='h-5 w-5' />
+            </Button>
+          </div>
         </div>
-        <div className='flex items-center space-x-2'>
-          <span className='text-sm text-muted-foreground'>{user?.name}</span>
-          <Button variant='ghost' size='icon' onClick={logout}>
-            <LogOut className='h-5 w-5' />
-          </Button>
-        </div>
+
+        <Button onClick={startNewWorkout} className='w-full' size='lg'>
+          <Plus className='mr-2 h-5 w-5' />
+          Start New Workout
+        </Button>
       </div>
 
-      <Button onClick={startNewWorkout} className='mb-6 w-full' size='lg'>
-        <Plus className='mr-2 h-5 w-5' />
-        Start New Workout
-      </Button>
-
+      <div className='p-4'>
       {loading ? (
         <p className='text-center text-muted-foreground'>Loading...</p>
       ) : (
@@ -125,6 +128,7 @@ export function DashboardPage() {
           </div>
         </>
       )}
+      </div>
     </div>
   );
 }

@@ -4,6 +4,14 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Copy, Trash2, Check } from 'lucide-react';
 
+function formatDuration(ms: number): string {
+  const totalMinutes = Math.floor(ms / 60000);
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  if (hours > 0) return `${hours}h ${minutes}m`;
+  return `${minutes}m`;
+}
+
 interface SessionCardProps {
   session: WorkoutSession;
   onComplete: (id: number) => void;
@@ -25,6 +33,14 @@ export function SessionCard({
     (sum, e) => sum + e.sets.length,
     0,
   );
+
+  const duration =
+    isCompleted && session.completed_at
+      ? formatDuration(
+          new Date(session.completed_at).getTime() -
+            new Date(session.created_at).getTime(),
+        )
+      : null;
 
   const cardColor = isCompleted
     ? 'hover:bg-neutral-100/10'
@@ -92,6 +108,9 @@ export function SessionCard({
       </CardHeader>
       <CardContent>
         <div className='flex flex-wrap gap-2 items-center'>
+          {duration && (
+            <Badge variant='outline'>{duration}</Badge>
+          )}
           {totalSets > 0 && (
             <Badge variant='secondary'>
               {totalSets} {totalSets === 1 ? 'set' : 'sets'}
