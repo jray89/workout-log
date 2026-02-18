@@ -22,6 +22,7 @@ import {
   X,
   Check,
 } from 'lucide-react';
+import { formatElapsed } from '@/lib/timeUtils';
 
 const MUSCLE_GROUPS = ['Chest', 'Back', 'Legs', 'Shoulders', 'Biceps', 'Triceps', 'Core', 'Other'];
 const EQUIPMENT_TYPES = ['Barbell', 'Dumbbell', 'Cable', 'Machine', 'Bodyweight', 'Other'];
@@ -42,6 +43,7 @@ export function WorkoutPage() {
   const [newExerciseMuscleGroup, setNewExerciseMuscleGroup] = useState('');
   const [newExerciseEquipment, setNewExerciseEquipment] = useState('');
   const [createError, setCreateError] = useState('');
+  const [elapsedSeconds, setElapsedSeconds] = useState(0);
 
   const fetchSession = useCallback(async () => {
     if (!id) return;
@@ -62,6 +64,15 @@ export function WorkoutPage() {
       api.getExercises().then(setExercises);
     }
   }, [showExercisePicker, exercises.length]);
+
+  useEffect(() => {
+    if (!session || session.completed_at) return;
+    const start = new Date(session.created_at).getTime();
+    const tick = () => setElapsedSeconds(Math.floor((Date.now() - start) / 1000));
+    tick();
+    const interval = setInterval(tick, 1000);
+    return () => clearInterval(interval);
+  }, [session]);
 
   async function addExercise(exerciseId: number) {
     if (!session) return;
@@ -183,8 +194,9 @@ export function WorkoutPage() {
   );
 
   return (
-    <div className='mx-auto max-w-2xl p-4'>
-      <div className='mb-4 flex items-center gap-3'>
+    <div className='mx-auto max-w-2xl'>
+      <div className='sticky top-0 z-10 border-b bg-background px-4 pb-4 pt-4'>
+      <div className='flex items-center gap-3'>
         <Button variant='ghost' size='icon' onClick={() => navigate('/')}>
           <ArrowLeft className='h-5 w-5' />
         </Button>
@@ -244,20 +256,27 @@ export function WorkoutPage() {
           </p>
         </div>
         {!isCompleted && (
-          <Button onClick={finishWorkout} variant='default' size='sm'>
-            <CheckCircle2 className='mr-1 h-4 w-4' />
-            Finish
-          </Button>
+          <div className='flex flex-col items-end gap-1 sm:flex-row sm:items-center sm:gap-2'>
+            <span className='font-mono text-sm text-muted-foreground tabular-nums'>
+              {formatElapsed(elapsedSeconds)}
+            </span>
+            <Button onClick={finishWorkout} variant='default' size='sm'>
+              <CheckCircle2 className='mr-1 h-4 w-4' />
+              Finish
+            </Button>
+          </div>
         )}
       </div>
 
       {isCompleted && (
-        <div className='mb-4 rounded-md bg-secondary p-3 text-center text-sm'>
+        <div className='mt-3 rounded-md bg-secondary p-3 text-center text-sm'>
           Workout completed on{' '}
           {new Date(session.completed_at!).toLocaleDateString()}
         </div>
       )}
+      </div>
 
+      <div className='p-4'>
       <div className='space-y-4'>
         {session.exercises.map((wse) => (
           <div key={wse.id} className='grid grid-cols-1 md:grid-cols-2 gap-4'>
@@ -418,6 +437,7 @@ export function WorkoutPage() {
           </CardContent>
         </Card>
       )}
+      </div>
     </div>
   );
 }

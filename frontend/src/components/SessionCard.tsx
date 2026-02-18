@@ -1,4 +1,5 @@
 import { type WorkoutSession } from '@/lib/api';
+import { duration } from '@/lib/timeUtils';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -25,6 +26,11 @@ export function SessionCard({
     (sum, e) => sum + e.sets.length,
     0,
   );
+
+  const workoutDuration =
+    isCompleted && session.completed_at
+      ? duration(session.created_at, session.completed_at)
+      : null;
 
   const cardColor = isCompleted
     ? 'hover:bg-neutral-100/10'
@@ -92,6 +98,9 @@ export function SessionCard({
       </CardHeader>
       <CardContent>
         <div className='flex flex-wrap gap-2 items-center'>
+          {workoutDuration && (
+            <Badge variant='outline'>{workoutDuration}</Badge>
+          )}
           {totalSets > 0 && (
             <Badge variant='secondary'>
               {totalSets} {totalSets === 1 ? 'set' : 'sets'}
