@@ -3,6 +3,17 @@ import { duration } from '@/lib/timeUtils';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import { Copy, Trash2, Check } from 'lucide-react';
 
 interface SessionCardProps {
@@ -85,14 +96,34 @@ export function SessionCard({
             >
               <Copy className='h-4 w-4' />
             </Button>
-            <Button
-              variant='ghost'
-              size='icon'
-              className='h-8 w-8 text-destructive'
-              onClick={() => onDelete(session.id)}
-            >
-              <Trash2 className='h-4 w-4' />
-            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant='ghost'
+                  size='icon'
+                  className='h-8 w-8 text-destructive'
+                >
+                  <Trash2 className='h-4 w-4' />
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent size='sm'>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Delete workout?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    "{session.name || 'Untitled Workout'}" will be permanently deleted. This cannot be undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    variant='destructive'
+                    onClick={() => onDelete(session.id)}
+                  >
+                    Delete
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         </div>
       </CardHeader>
