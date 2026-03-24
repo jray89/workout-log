@@ -9,6 +9,8 @@ Rails.application.routes.draw do
         get :history, on: :member
       end
 
+      resource :user_preference, only: [ :show, :update ]
+
       resources :workout_sessions, only: [ :index, :show, :create, :update, :destroy ] do
         post :duplicate, on: :member
 

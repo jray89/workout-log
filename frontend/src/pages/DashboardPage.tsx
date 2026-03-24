@@ -4,7 +4,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { api, type WorkoutSession } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { SessionCard } from '@/components/SessionCard';
-import { Plus, LogOut } from 'lucide-react';
+import { Plus, LogOut, Settings } from 'lucide-react';
 
 export function DashboardPage() {
   const { user, logout } = useAuth();
@@ -69,7 +69,16 @@ export function DashboardPage() {
             <h1 className='text-2xl font-bold'>📋 Workout Log</h1>
           </div>
           <div className='flex items-center space-x-2'>
-            <span className='text-sm text-muted-foreground'>{user?.name}</span>
+            <span className='text-sm text-muted-foreground me-4'>
+              {user?.name}
+            </span>
+            <Button
+              variant='ghost'
+              size='icon'
+              onClick={() => navigate('/settings')}
+            >
+              <Settings className='h-5 w-5' />
+            </Button>
             <Button variant='ghost' size='icon' onClick={logout}>
               <LogOut className='h-5 w-5' />
             </Button>
@@ -83,51 +92,51 @@ export function DashboardPage() {
       </div>
 
       <div className='p-4'>
-      {loading ? (
-        <p className='text-center text-muted-foreground'>Loading...</p>
-      ) : (
-        <>
-          {pinnedSessions.length > 0 && (
-            <div className='mb-6'>
-              <h2 className='mb-3 text-lg font-semibold'>Favorites</h2>
-              <div className='space-y-3'>
-                {pinnedSessions.map((session) => (
-                  <SessionCard
-                    key={session.id}
-                    session={session}
-                    onComplete={completeSession}
-                    onDuplicate={duplicateWorkout}
-                    onDelete={deleteSession}
-                    onOpen={(id) => navigate(`/workout/${id}`)}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
-
-          <div>
-            <h2 className='mb-3 text-lg font-semibold'>Recent Workouts</h2>
-            {recentSessions.length === 0 && pinnedSessions.length === 0 ? (
-              <p className='text-center text-muted-foreground py-8'>
-                No workouts yet. Start your first one!
-              </p>
-            ) : (
-              <div className='space-y-3'>
-                {recentSessions.map((session) => (
-                  <SessionCard
-                    key={session.id}
-                    session={session}
-                    onComplete={completeSession}
-                    onDuplicate={duplicateWorkout}
-                    onDelete={deleteSession}
-                    onOpen={(id) => navigate(`/workout/${id}`)}
-                  />
-                ))}
+        {loading ? (
+          <p className='text-center text-muted-foreground'>Loading...</p>
+        ) : (
+          <>
+            {pinnedSessions.length > 0 && (
+              <div className='mb-6'>
+                <h2 className='mb-3 text-lg font-semibold'>Favorites</h2>
+                <div className='space-y-3'>
+                  {pinnedSessions.map((session) => (
+                    <SessionCard
+                      key={session.id}
+                      session={session}
+                      onComplete={completeSession}
+                      onDuplicate={duplicateWorkout}
+                      onDelete={deleteSession}
+                      onOpen={(id) => navigate(`/workout/${id}`)}
+                    />
+                  ))}
+                </div>
               </div>
             )}
-          </div>
-        </>
-      )}
+
+            <div>
+              <h2 className='mb-3 text-lg font-semibold'>Recent Workouts</h2>
+              {recentSessions.length === 0 && pinnedSessions.length === 0 ? (
+                <p className='text-center text-muted-foreground py-8'>
+                  No workouts yet. Start your first one!
+                </p>
+              ) : (
+                <div className='space-y-3'>
+                  {recentSessions.map((session) => (
+                    <SessionCard
+                      key={session.id}
+                      session={session}
+                      onComplete={completeSession}
+                      onDuplicate={duplicateWorkout}
+                      onDelete={deleteSession}
+                      onOpen={(id) => navigate(`/workout/${id}`)}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

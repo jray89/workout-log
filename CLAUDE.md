@@ -60,6 +60,7 @@ All routes under `/api/v1/`:
 - `GET/POST /exercises`, `GET /exercises/:id/history` — exercise library + history
 - CRUD `/workout_sessions` + `POST :duplicate`
 - Nested: `/workout_sessions/:id/workout_session_exercises` and `/exercise_sets`
+- `GET/PATCH /user_preference` — user theme preference (singular resource)
 
 ### Admin Users
 - `users.admin` boolean column (default `false`)
@@ -72,7 +73,12 @@ All routes under `/api/v1/`:
 User
   has_many :workout_sessions
   has_many :exercises (custom ones, via created_by_id)
+  has_one :user_preference
   admin: boolean (default false)
+
+UserPreference
+  belongs_to :user
+  fields: theme (string: "light"|"dark"|"system", default "system")
 
 Exercise (shared library + user-created custom exercises)
   belongs_to :created_by (User, optional)
@@ -98,7 +104,7 @@ All controllers scope queries to `current_user` — users only see their own dat
 - `src/App.tsx` — routes with `ProtectedRoute` / `GuestRoute` wrappers
 - `src/hooks/useAuth.tsx` — auth context (user state, login/signup/logout)
 - `src/lib/api.ts` — API client + all TypeScript interfaces
-- `src/pages/` — DashboardPage, WorkoutPage, LoginPage, SignupPage
+- `src/pages/` — DashboardPage, WorkoutPage, LoginPage, SignupPage, SettingsPage
 - `src/components/` — SessionCard, ExerciseCard, ExerciseHistoryCard
 - `src/components/ui/` — shadcn/ui primitives (button, card, input, etc.)
 - Uses `@/` path alias (resolves to `src/`)

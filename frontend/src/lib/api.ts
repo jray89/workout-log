@@ -44,6 +44,15 @@ export const api = {
 
   me: () => request<{ user: User }>("/me"),
 
+  // User Preferences
+  getPreference: () => request<UserPreference>("/user_preference"),
+
+  updatePreference: (data: Partial<UserPreference>) =>
+    request<UserPreference>("/user_preference", {
+      method: "PATCH",
+      body: JSON.stringify(data),
+    }),
+
   // Exercises
   getExercises: () => request<Exercise[]>("/exercises"),
 
@@ -130,6 +139,10 @@ export const api = {
 };
 
 // Types
+export interface UserPreference {
+  theme: "light" | "dark" | "system";
+}
+
 export interface User {
   id: number;
   email: string;
