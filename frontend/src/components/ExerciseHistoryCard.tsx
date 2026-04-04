@@ -80,6 +80,7 @@ export function ExerciseHistoryCard({ exerciseId }: ExerciseHistoryCardProps) {
   }));
 
   const maxWeight = Math.max(...history.map((entry) => entry.max_weight));
+  const minWeight = Math.min(...history.map((entry) => entry.max_weight));
 
   return (
     <Card className='hidden md:block'>
@@ -103,8 +104,12 @@ export function ExerciseHistoryCard({ exerciseId }: ExerciseHistoryCardProps) {
               tickLine={false}
               axisLine={false}
               tickMargin={8}
+              tickCount={4}
             />
             <YAxis
+              domain={[minWeight - 5, maxWeight + 5]}
+              // domain={['auto', 'auto']}
+              tickCount={3}
               dataKey='weight'
               tickLine={false}
               axisLine={false}
