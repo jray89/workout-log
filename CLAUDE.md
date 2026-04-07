@@ -60,7 +60,8 @@ All routes under `/api/v1/`:
 - `GET/POST /exercises`, `GET /exercises/:id/history` — exercise library + history
 - CRUD `/workout_sessions` + `POST :duplicate`
 - Nested: `/workout_sessions/:id/workout_session_exercises` and `/exercise_sets`
-- `GET/PATCH /user_preference` — user theme preference (singular resource)
+- `GET/PATCH /user_preference` — user theme + weekly goal preference (singular resource)
+- `GET /dashboard` — aggregated stats for the dashboard (streak, weekly stats, PRs, muscle groups, heatmap activity)
 
 ### Admin Users
 - `users.admin` boolean column (default `false`)
@@ -79,6 +80,7 @@ User
 UserPreference
   belongs_to :user
   fields: theme (string: "light"|"dark"|"system", default "system")
+          weekly_goal (integer, default 3) — workouts/week target for streak calculation
 
 Exercise (shared library + user-created custom exercises)
   belongs_to :created_by (User, optional)
@@ -105,7 +107,7 @@ All controllers scope queries to `current_user` — users only see their own dat
 - `src/hooks/useAuth.tsx` — auth context (user state, login/signup/logout)
 - `src/lib/api.ts` — API client + all TypeScript interfaces
 - `src/pages/` — DashboardPage, WorkoutPage, LoginPage, SignupPage, SettingsPage
-- `src/components/` — SessionCard, ExerciseCard, ExerciseHistoryCard
+- `src/components/` — SessionCard, ExerciseCard, ExerciseHistoryCard, WorkoutHeatmap
 - `src/components/ui/` — shadcn/ui primitives (button, card, input, etc.)
 - Uses `@/` path alias (resolves to `src/`)
 

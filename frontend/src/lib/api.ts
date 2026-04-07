@@ -53,6 +53,9 @@ export const api = {
       body: JSON.stringify(data),
     }),
 
+  // Dashboard stats
+  getDashboardStats: () => request<DashboardStats>("/dashboard"),
+
   // Exercises
   getExercises: () => request<Exercise[]>("/exercises"),
 
@@ -141,6 +144,22 @@ export const api = {
 // Types
 export interface UserPreference {
   theme: "light" | "dark" | "system";
+  weekly_goal: number;
+}
+
+export interface DashboardStats {
+  streak: { current: number; longest: number };
+  weekly_stats: {
+    this_week_count: number;
+    last_week_count: number;
+    this_week_volume: number;
+    last_week_volume: number;
+  };
+  weekly_goal: number;
+  total_workouts: number;
+  recent_prs: Array<{ exercise_name: string; weight: number; date: string }>;
+  muscle_groups: Array<{ muscle_group: string; count: number }>;
+  activity: Array<{ date: string; count: number }>;
 }
 
 export interface User {

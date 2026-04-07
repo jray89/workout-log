@@ -39,6 +39,7 @@ src/
 │   ├── SessionCard.tsx        # Workout session summary card
 │   ├── ExerciseCard.tsx       # Exercise with sets in a workout
 │   ├── ExerciseHistoryCard.tsx # Weight progress chart
+│   ├── WorkoutHeatmap.tsx     # GitHub-style activity heatmap (13-week calendar grid)
 │   └── theme-provider.tsx     # Dark/light theme context
 └── components/ui/             # shadcn/ui primitives (button, card, input, etc.)
 ```

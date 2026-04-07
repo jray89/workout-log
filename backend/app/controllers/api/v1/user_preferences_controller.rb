@@ -18,11 +18,11 @@ module Api
       private
 
       def preference_params
-        params.permit(:theme)
+        params.permit(:theme, :weekly_goal)
       end
 
       def preference_json(preference)
-        { theme: preference.theme }
+        { theme: preference.theme, weekly_goal: preference.weekly_goal || 3 }
       end
     end
   end

@@ -14,16 +14,20 @@ const THEME_OPTIONS: { value: Theme; label: string; icon: React.ReactNode }[] = 
   { value: 'system', label: 'System', icon: <Monitor className='h-4 w-4' /> },
 ];
 
+const GOAL_OPTIONS = [2, 3, 4, 5];
+
 export function SettingsPage() {
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
   const [saving, setSaving] = useState(false);
+  const [weeklyGoal, setWeeklyGoal] = useState(3);
 
   useEffect(() => {
     api.getPreference().then((pref) => {
       setTheme(pref.theme);
+      setWeeklyGoal(pref.weekly_goal ?? 3);
     }).catch(() => {
-      // preference not yet set — keep current local theme
+      // preference not yet set — keep defaults
     });
   }, [setTheme]);
 
@@ -32,6 +36,16 @@ export function SettingsPage() {
     setSaving(true);
     try {
       await api.updatePreference({ theme: value });
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function handleGoalChange(value: number) {
+    setWeeklyGoal(value);
+    setSaving(true);
+    try {
+      await api.updatePreference({ weekly_goal: value });
     } finally {
       setSaving(false);
     }
@@ -78,6 +92,41 @@ export function SettingsPage() {
                   >
                     {option.icon}
                     <span>{option.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <h2 className='mb-1 text-sm font-semibold text-muted-foreground uppercase tracking-wide'>
+            Training Goal
+          </h2>
+          <div className='rounded-lg border bg-card p-4'>
+            <div className='flex items-center justify-between'>
+              <div>
+                <p className='font-medium'>Weekly workout target</p>
+                <p className='text-sm text-muted-foreground'>
+                  How many sessions per week counts as a streak week.
+                </p>
+              </div>
+              <div className='flex items-center rounded-lg border p-1 gap-1'>
+                {GOAL_OPTIONS.map((n) => (
+                  <button
+                    key={n}
+                    onClick={() => handleGoalChange(n)}
+                    disabled={saving}
+                    className={cn(
+                      'w-9 rounded-md py-1.5 text-sm font-medium transition-colors',
+                      weeklyGoal === n
+                        ? 'bg-primary text-primary-foreground shadow-sm'
+                        : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                    )}
+                    aria-pressed={weeklyGoal === n}
+                    aria-label={`${n} workouts per week`}
+                  >
+                    {n}
                   </button>
                 ))}
               </div>

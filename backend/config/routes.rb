@@ -10,6 +10,7 @@ Rails.application.routes.draw do
       end
 
       resource :user_preference, only: [ :show, :update ]
+      resource :dashboard, only: [ :show ]
 
       resources :workout_sessions, only: [ :index, :show, :create, :update, :destroy ] do
         post :duplicate, on: :member
