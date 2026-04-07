@@ -1,4 +1,5 @@
 # Backend
+backend/.bundle/
 backend/tmp/
 backend/log/
 backend/storage/
