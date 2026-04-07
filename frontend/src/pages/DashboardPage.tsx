@@ -7,13 +7,32 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { SessionCard } from '@/components/SessionCard';
 import { WorkoutHeatmap } from '@/components/WorkoutHeatmap';
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart';
 import { BarChart, Bar, XAxis, YAxis, Cell } from 'recharts';
-import { Plus, LogOut, Settings, TrendingUp, TrendingDown, Minus, Trophy, Flame, Dumbbell } from 'lucide-react';
+import {
+  Plus,
+  LogOut,
+  Settings,
+  TrendingUp,
+  TrendingDown,
+  Minus,
+  Trophy,
+  Flame,
+  Dumbbell,
+  Tally5,
+} from 'lucide-react';
 
 const MILESTONES = [10, 25, 50, 100, 200, 500, 1000];
 
-function getMilestoneInfo(total: number): { reached: number | null; next: number | null; nearNext: boolean } {
+function getMilestoneInfo(total: number): {
+  reached: number | null;
+  next: number | null;
+  nearNext: boolean;
+} {
   const reached = [...MILESTONES].reverse().find((m) => m <= total) ?? null;
   const next = MILESTONES.find((m) => m > total) ?? null;
   const nearNext = next !== null && next - total <= 5;
@@ -96,7 +115,8 @@ export function DashboardPage() {
   const weekDelta = thisWeekCount - lastWeekCount;
   const thisWeekVol = stats?.weekly_stats.this_week_volume ?? 0;
   const lastWeekVol = stats?.weekly_stats.last_week_volume ?? 0;
-  const volDelta = lastWeekVol > 0 ? ((thisWeekVol - lastWeekVol) / lastWeekVol) * 100 : 0;
+  const volDelta =
+    lastWeekVol > 0 ? ((thisWeekVol - lastWeekVol) / lastWeekVol) * 100 : 0;
 
   return (
     <div className='mx-auto max-w-2xl'>
@@ -131,24 +151,91 @@ export function DashboardPage() {
 
       <div className='p-4 space-y-4'>
         {/* Activity Heatmap */}
-        {!statsLoading && stats && stats.activity.length > 0 && (
-          <WorkoutHeatmap activity={stats.activity} />
-        )}
+        <div className='grid grid-cols-1 gap-3 md:grid-cols-2'>
+          {!statsLoading && stats && stats.activity.length > 0 && (
+            <WorkoutHeatmap activity={stats.activity} />
+          )}
+
+          {/* Muscle Group Balance */}
+          {!statsLoading && stats && stats.muscle_groups.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle className='text-base font-semibold'>
+                  Muscle Groups{' '}
+                  <span className='text-xs font-normal text-muted-foreground'>
+                    (last 30 days)
+                  </span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ChartContainer
+                  config={{
+                    count: { label: 'Sessions', color: '#ff6900' },
+                  }}
+                  className='h-38 w-full'
+                >
+                  <BarChart
+                    data={stats.muscle_groups}
+                    layout='vertical'
+                    margin={{ top: 0, right: 16, bottom: 0, left: 0 }}
+                  >
+                    <XAxis
+                      type='number'
+                      tickLine={false}
+                      axisLine={false}
+                      tickFormatter={(value) => (value % 1 ? '' : value)}
+                    />
+                    <YAxis
+                      type='category'
+                      dataKey='muscle_group'
+                      width={80}
+                      tick={{ fontSize: 11 }}
+                      tickLine={false}
+                      axisLine={false}
+                    />
+                    <ChartTooltip
+                      content={<ChartTooltipContent hideLabel />}
+                      cursor={{ fill: 'hsl(var(--muted))' }}
+                    />
+                    <Bar
+                      dataKey='count'
+                      maxBarSize={16}
+                      fill='var(--color-count)'
+                    >
+                      {/* {stats.muscle_groups.map((_, i) => (
+                        <Cell
+                          key={i}
+                          fill={
+                            i === 0
+                              ? 'hsl(var(--chart-1))'
+                              : 'hsl(var(--chart-2))'
+                          }
+                        />
+                      ))} */}
+                    </Bar>
+                  </BarChart>
+                </ChartContainer>
+              </CardContent>
+            </Card>
+          )}
+        </div>
 
         {/* Stats grid */}
         {!statsLoading && stats && (
-          <div className='grid grid-cols-2 gap-3'>
+          <div className='grid grid-cols-2 gap-3 md:grid-cols-4'>
             {/* Streak card */}
             <Card className='col-span-1'>
-              <CardHeader className='pb-1 pt-4 px-4'>
+              <CardHeader>
                 <CardTitle className='text-xs font-medium text-muted-foreground uppercase tracking-wide flex items-center gap-1'>
-                  <Flame className='h-3 w-3' /> Weekly Streak
+                  <Flame className='h-3 w-3' /> Streak
                 </CardTitle>
               </CardHeader>
-              <CardContent className='px-4 pb-4'>
+              <CardContent>
                 <div className='text-3xl font-bold leading-none'>
                   {stats.streak.current}
-                  <span className='text-base font-normal text-muted-foreground ml-1'>wks</span>
+                  <span className='text-base font-normal text-muted-foreground ml-1'>
+                    wks
+                  </span>
                 </div>
                 <div className='mt-2 space-y-1'>
                   {/* Progress toward weekly goal */}
@@ -176,18 +263,28 @@ export function DashboardPage() {
 
             {/* This Week card */}
             <Card className='col-span-1'>
-              <CardHeader className='pb-1 pt-4 px-4'>
+              <CardHeader>
                 <CardTitle className='text-xs font-medium text-muted-foreground uppercase tracking-wide flex items-center gap-1'>
                   <Dumbbell className='h-3 w-3' /> This Week
                 </CardTitle>
               </CardHeader>
-              <CardContent className='px-4 pb-4'>
+              <CardContent>
                 <div className='flex items-baseline gap-1.5'>
-                  <span className='text-3xl font-bold leading-none'>{thisWeekCount}</span>
-                  <span className='text-base text-muted-foreground'>sessions</span>
+                  <span className='text-3xl font-bold leading-none'>
+                    {thisWeekCount}
+                  </span>
+                  <span className='text-base text-muted-foreground'>
+                    sessions
+                  </span>
                   {weekDelta !== 0 && (
-                    <span className={`text-xs font-medium flex items-center ${weekDelta > 0 ? 'text-green-500' : 'text-red-500'}`}>
-                      {weekDelta > 0 ? <TrendingUp className='h-3 w-3' /> : <TrendingDown className='h-3 w-3' />}
+                    <span
+                      className={`text-xs font-medium flex items-center ${weekDelta > 0 ? 'text-green-500' : 'text-red-500'}`}
+                    >
+                      {weekDelta > 0 ? (
+                        <TrendingUp className='h-3 w-3' />
+                      ) : (
+                        <TrendingDown className='h-3 w-3' />
+                      )}
                       {Math.abs(weekDelta)}
                     </span>
                   )}
@@ -202,39 +299,54 @@ export function DashboardPage() {
                     <p className='text-xs text-muted-foreground'>
                       {formatVolume(thisWeekVol)} lbs
                       {lastWeekVol > 0 && (
-                        <span className={`ml-1 ${volDelta > 0 ? 'text-green-500' : volDelta < 0 ? 'text-red-500' : ''}`}>
-                          {volDelta > 0 ? '+' : ''}{volDelta.toFixed(0)}% vol vs last wk
+                        <span
+                          className={`ml-1 ${volDelta > 0 ? 'text-green-500' : volDelta < 0 ? 'text-red-500' : ''}`}
+                        >
+                          {volDelta > 0 ? '+' : ''}
+                          {volDelta.toFixed(0)}% vol vs last wk
                         </span>
                       )}
                     </p>
                   ) : (
-                    <p className='text-xs text-muted-foreground'>No volume logged yet</p>
+                    <p className='text-xs text-muted-foreground'>
+                      No volume logged yet
+                    </p>
                   )}
-                  <p className='text-xs text-muted-foreground'>Last week: {lastWeekCount} sessions</p>
+                  <p className='text-xs text-muted-foreground'>
+                    Last week: {lastWeekCount}
+                  </p>
                 </div>
               </CardContent>
             </Card>
 
             {/* Total workouts card */}
             <Card className='col-span-1'>
-              <CardHeader className='pb-1 pt-4 px-4'>
-                <CardTitle className='text-xs font-medium text-muted-foreground uppercase tracking-wide'>
-                  Total Workouts
+              <CardHeader>
+                <CardTitle className='text-xs font-medium text-muted-foreground uppercase tracking-wide flex items-center gap-1'>
+                  <Tally5 className='h-3 w-3' /> Workouts
                 </CardTitle>
               </CardHeader>
-              <CardContent className='px-4 pb-4'>
-                <div className='text-3xl font-bold leading-none'>{stats.total_workouts}</div>
+              <CardContent>
+                <div className='text-3xl font-bold leading-none'>
+                  {stats.total_workouts}
+                </div>
                 <div className='mt-2'>
                   {milestone?.reached === stats.total_workouts && (
-                    <Badge variant='default' className='text-xs bg-green-600 hover:bg-green-600'>
+                    <Badge
+                      variant='default'
+                      className='text-xs bg-green-600 hover:bg-green-600'
+                    >
                       🎉 {milestone.reached} milestone!
                     </Badge>
                   )}
-                  {milestone?.nearNext && milestone.reached !== stats.total_workouts && milestone.next && (
-                    <p className='text-xs text-muted-foreground'>
-                      {milestone.next - stats.total_workouts} to go until {milestone.next}!
-                    </p>
-                  )}
+                  {milestone?.nearNext &&
+                    milestone.reached !== stats.total_workouts &&
+                    milestone.next && (
+                      <p className='text-xs text-muted-foreground'>
+                        {milestone.next - stats.total_workouts} to go until{' '}
+                        {milestone.next}!
+                      </p>
+                    )}
                   {!milestone?.nearNext && milestone?.reached && (
                     <p className='text-xs text-muted-foreground'>
                       Next milestone: {milestone.next ?? '∞'}
@@ -246,19 +358,26 @@ export function DashboardPage() {
 
             {/* Recent PRs card */}
             <Card className='col-span-1'>
-              <CardHeader className='pb-1 pt-4 px-4'>
+              <CardHeader>
                 <CardTitle className='text-xs font-medium text-muted-foreground uppercase tracking-wide flex items-center gap-1'>
                   <Trophy className='h-3 w-3' /> Recent PRs
                 </CardTitle>
               </CardHeader>
-              <CardContent className='px-4 pb-4'>
+              <CardContent>
                 {stats.recent_prs.length === 0 ? (
-                  <p className='text-xs text-muted-foreground'>No new PRs in the last 30 days</p>
+                  <p className='text-xs text-muted-foreground'>
+                    No new PRs in the last 30 days
+                  </p>
                 ) : (
                   <ul className='space-y-1'>
                     {stats.recent_prs.slice(0, 3).map((pr, i) => (
-                      <li key={i} className='flex items-center justify-between gap-1'>
-                        <span className='text-xs truncate text-foreground'>{pr.exercise_name}</span>
+                      <li
+                        key={i}
+                        className='flex items-center justify-between gap-1'
+                      >
+                        <span className='text-xs truncate text-foreground'>
+                          {pr.exercise_name}
+                        </span>
                         <span className='text-xs font-semibold text-green-600 dark:text-green-400 shrink-0'>
                           {pr.weight} lbs
                         </span>
@@ -269,51 +388,6 @@ export function DashboardPage() {
               </CardContent>
             </Card>
           </div>
-        )}
-
-        {/* Muscle Group Balance */}
-        {!statsLoading && stats && stats.muscle_groups.length > 0 && (
-          <Card>
-            <CardHeader className='pb-2'>
-              <CardTitle className='text-base font-semibold'>Muscle Groups <span className='text-xs font-normal text-muted-foreground'>(last 30 days)</span></CardTitle>
-            </CardHeader>
-            <CardContent className='pb-4'>
-              <ChartContainer
-                config={{
-                  count: { label: 'Sessions', color: 'hsl(var(--chart-1))' },
-                }}
-                className='h-[180px] w-full'
-              >
-                <BarChart
-                  data={stats.muscle_groups}
-                  layout='vertical'
-                  margin={{ top: 0, right: 16, bottom: 0, left: 0 }}
-                >
-                  <XAxis type='number' hide />
-                  <YAxis
-                    type='category'
-                    dataKey='muscle_group'
-                    width={80}
-                    tick={{ fontSize: 11 }}
-                    tickLine={false}
-                    axisLine={false}
-                  />
-                  <ChartTooltip
-                    content={<ChartTooltipContent hideLabel />}
-                    cursor={{ fill: 'hsl(var(--muted))' }}
-                  />
-                  <Bar dataKey='count' radius={[0, 4, 4, 0]} maxBarSize={16}>
-                    {stats.muscle_groups.map((_, i) => (
-                      <Cell
-                        key={i}
-                        fill={i === 0 ? 'hsl(var(--chart-1))' : 'hsl(var(--chart-2))'}
-                      />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ChartContainer>
-            </CardContent>
-          </Card>
         )}
 
         {/* Session lists */}

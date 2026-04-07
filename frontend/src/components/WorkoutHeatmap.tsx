@@ -9,9 +9,22 @@ interface Props {
   activity: ActivityEntry[];
 }
 
-const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-const SHORT_DAYS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
-const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const SHORT_DAYS = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+const MONTHS = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
+];
 
 function cellColor(count: number): string {
   if (count === 0) return 'bg-muted';
@@ -30,14 +43,18 @@ export function WorkoutHeatmap({ activity }: Props) {
 
   // Day-of-week for the first entry (0=Mon…6=Sun, ISO-style)
   const firstDate = parseLocalDate(activity[0].date);
-  // JS getDay(): 0=Sun,1=Mon…6=Sat → convert to Mon=0…Sun=6
-  const firstDow = (firstDate.getDay() + 6) % 7;
+  // JS getDay(): 0=Sun,1=Mon…6=Sat
+  const firstDow = firstDate.getDay();
 
   // Build grid cells: leading empty pads + one entry per activity day
-  type Cell = { empty: true } | { empty: false; entry: ActivityEntry; date: Date };
+  type Cell = { empty: boolean; date?: Date; entry?: ActivityEntry };
   const cells: Cell[] = [
     ...Array.from({ length: firstDow }, () => ({ empty: true as const })),
-    ...activity.map((entry) => ({ empty: false as const, entry, date: parseLocalDate(entry.date) })),
+    ...activity.map((entry) => ({
+      empty: false as const,
+      entry,
+      date: parseLocalDate(entry.date),
+    })),
   ];
 
   // Split into weeks (columns of 7)
@@ -48,64 +65,75 @@ export function WorkoutHeatmap({ activity }: Props) {
 
   // Month label per column: show month name when it first appears in that column
   const monthLabels: (string | null)[] = weeks.map((week, wi) => {
-    const firstReal = week.find((c) => !c.empty) as { empty: false; date: Date } | undefined;
+    const firstReal = week.find((c) => !c.empty) as
+      | { empty: false; date: Date }
+      | undefined;
     if (!firstReal) return null;
     const month = firstReal.date.getMonth();
     // Show label if this is the first week of that month OR first column
     if (wi === 0) return MONTHS[month];
     const prevWeek = weeks[wi - 1];
-    const prevReal = prevWeek.find((c) => !c.empty) as { empty: false; date: Date } | undefined;
+    const prevReal = prevWeek.find((c) => !c.empty) as
+      | { empty: false; date: Date }
+      | undefined;
     if (!prevReal || prevReal.date.getMonth() !== month) return MONTHS[month];
     return null;
   });
 
   return (
     <Card>
-      <CardHeader className="pb-2">
-        <CardTitle className="text-base font-semibold">Activity</CardTitle>
+      <CardHeader>
+        <CardTitle className='text-base font-semibold'>Activity</CardTitle>
       </CardHeader>
-      <CardContent className="pb-4">
-        <div className="overflow-x-auto">
-          <div className="inline-flex flex-col gap-1 min-w-0">
+      <CardContent>
+        <div className='overflow-x-auto flex items-center justify-center'>
+          <div className='inline-flex flex-col gap-1 min-w-0'>
             {/* Month labels row */}
-            <div className="flex gap-1 pl-7">
+            <div className='flex gap-1 pl-7'>
               {weeks.map((_, wi) => (
-                <div key={wi} className="w-3 text-[10px] text-muted-foreground leading-none">
+                <div
+                  key={wi}
+                  className='w-3 text-[10px] text-muted-foreground leading-none'
+                >
                   {monthLabels[wi] ?? ''}
                 </div>
               ))}
             </div>
 
             {/* Grid: day labels on left, week columns */}
-            <div className="flex gap-1">
+            <div className='flex gap-1'>
               {/* Day-of-week labels */}
-              <div className="flex flex-col gap-1 w-6 shrink-0">
+              <div className='flex flex-col gap-1 w-6 shrink-0'>
                 {SHORT_DAYS.map((d, i) => (
                   <div
                     key={i}
-                    className="h-3 text-[10px] text-muted-foreground leading-none flex items-center"
+                    className='h-3 text-[10px] text-muted-foreground leading-none flex items-center justify-center'
                     aria-label={DAYS[i]}
                   >
-                    {/* Only show M, W, F to avoid crowding */}
-                    {i % 2 === 0 ? d : ''}
+                    {d}
                   </div>
                 ))}
               </div>
 
               {/* Week columns */}
               {weeks.map((week, wi) => (
-                <div key={wi} className="flex flex-col gap-1">
+                <div key={wi} className='flex flex-col gap-1'>
                   {Array.from({ length: 7 }, (_, di) => {
                     const cell = week[di];
                     if (!cell || cell.empty) {
-                      return <div key={di} className="w-3 h-3 rounded-sm bg-transparent" />;
+                      return (
+                        <div
+                          key={di}
+                          className='w-3 h-3 rounded-sm bg-transparent'
+                        />
+                      );
                     }
-                    const { entry, date } = cell as { empty: false; entry: ActivityEntry; date: Date };
-                    const label = `${date.toDateString()}: ${entry.count} workout${entry.count !== 1 ? 's' : ''}`;
+                    const { entry, date } = cell;
+                    const label = `${date?.toDateString()}: ${entry?.count} workout${entry?.count !== 1 ? 's' : ''}`;
                     return (
                       <div
                         key={di}
-                        className={`w-3 h-3 rounded-sm ${cellColor(entry.count)} cursor-default transition-opacity hover:opacity-75`}
+                        className={`w-3 h-3 rounded-sm ${cellColor(entry!.count)} cursor-default transition-opacity hover:opacity-75`}
                         title={label}
                         aria-label={label}
                       />
@@ -116,12 +144,12 @@ export function WorkoutHeatmap({ activity }: Props) {
             </div>
 
             {/* Legend */}
-            <div className="flex items-center gap-1.5 pl-7 mt-1">
-              <span className="text-[10px] text-muted-foreground">Less</span>
+            <div className='flex items-center gap-1.5 pl-7 mt-1'>
+              <span className='text-[10px] text-muted-foreground'>Less</span>
               {[0, 1, 2, 3].map((n) => (
                 <div key={n} className={`w-3 h-3 rounded-sm ${cellColor(n)}`} />
               ))}
-              <span className="text-[10px] text-muted-foreground">More</span>
+              <span className='text-[10px] text-muted-foreground'>More</span>
             </div>
           </div>
         </div>

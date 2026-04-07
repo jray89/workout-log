@@ -1,6 +1,6 @@
 module Api
   module V1
-    class DashboardController < ApplicationController
+    class DashboardsController < ApplicationController
       def show
         render json: {
           streak:       compute_streak,
