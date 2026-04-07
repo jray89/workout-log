@@ -149,7 +149,7 @@ module Api
           end
         end
 
-        prs.sort_by { |pr| pr[:date] }.reverse.first(5)
+        prs.sort_by { |pr| [pr[:date], pr[:weight]] }.reverse.first(5)
       end
 
       # ---------------------------------------------------------------------------
