@@ -26,6 +26,7 @@ All routes are under `/api/v1/`. Authentication required unless noted.
 | POST | `/signup` | Create account (no auth) |
 | POST | `/login` | Get JWT token (no auth) |
 | GET | `/me` | Current user info |
+| GET | `/dashboard` | Aggregated stats: streak, weekly stats, PRs, muscle groups, heatmap activity |
 | GET | `/exercises` | List all exercises |
 | POST | `/exercises` | Create custom exercise |
 | GET | `/exercises/:id/history` | Weight history for an exercise |
