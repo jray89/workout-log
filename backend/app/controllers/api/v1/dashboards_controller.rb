@@ -171,14 +171,16 @@ module Api
       # Activity heatmap — one entry per calendar day for the past 91 days
       # ---------------------------------------------------------------------------
       def compute_activity
-        start_date = 91.days.ago.to_date
-        raw = current_user.workout_sessions.completed
-          .where("DATE(completed_at) >= ?", start_date)
-          .group("DATE(completed_at)")
-          .count
+        start_time = 91.days.ago.utc
 
-        (start_date..Date.today).map do |d|
-          { date: d.to_s, count: raw[d.to_s] || 0 }
+        counts = current_user.workout_sessions.completed
+          .where(completed_at: start_time..Time.now.utc)
+          .pluck(:completed_at)
+          .each_with_object(Hash.new(0)) { |ts, h| h[ts.utc.to_date.to_s] += 1 }
+      
+        start_date = start_time.to_date
+        (start_date..Date.current).map do |d|
+          { date: d.to_s, count: counts[d.to_s] || 0 }
         end
       end
     end
