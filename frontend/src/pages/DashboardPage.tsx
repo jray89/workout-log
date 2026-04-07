@@ -12,7 +12,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/ui/chart';
-import { BarChart, Bar, XAxis, YAxis, Cell } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis } from 'recharts';
 import {
   Plus,
   LogOut,
