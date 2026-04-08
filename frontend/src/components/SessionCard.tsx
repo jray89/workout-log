@@ -132,6 +132,9 @@ export function SessionCard({
           {workoutDuration && (
             <Badge variant='outline'>{workoutDuration}</Badge>
           )}
+          {session.distance && (
+            <Badge variant='outline'>{session.distance} mi</Badge>
+          )}
           {totalSets > 0 && (
             <Badge variant='secondary'>
               {totalSets} {totalSets === 1 ? 'set' : 'sets'}
