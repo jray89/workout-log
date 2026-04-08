@@ -171,7 +171,7 @@ module Api
       # Activity heatmap — one entry per calendar day for the past 91 days
       # ---------------------------------------------------------------------------
       def compute_activity
-        start_time = 91.days.ago.utc
+        start_time = 14.weeks.ago.utc.beginning_of_week
 
         counts = current_user.workout_sessions.completed
           .where(completed_at: start_time..Time.now.utc)

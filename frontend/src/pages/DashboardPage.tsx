@@ -245,7 +245,9 @@ export function DashboardPage() {
                         <div
                           key={i}
                           className={`h-1.5 w-4 rounded-full ${
-                            i < thisWeekCount ? 'bg-green-500' : 'bg-muted'
+                            i < thisWeekCount
+                              ? 'bg-green-600 dark:bg-green-400'
+                              : 'bg-muted'
                           }`}
                         />
                       ))}
@@ -278,7 +280,7 @@ export function DashboardPage() {
                   </span>
                   {weekDelta !== 0 && (
                     <span
-                      className={`text-xs font-medium flex items-center ${weekDelta > 0 ? 'text-green-500' : 'text-red-500'}`}
+                      className={`text-xs font-bold flex items-center gap-1 ${weekDelta > 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}
                     >
                       {weekDelta > 0 ? (
                         <TrendingUp className='h-3 w-3' />
@@ -396,7 +398,8 @@ export function DashboardPage() {
         ) : (
           <>
             {pinnedSessions.length > 0 && (
-              <div>
+              <>
+                <hr className='mt-6' />
                 <h2 className='mb-3 text-lg font-semibold'>Favorites</h2>
                 <div className='space-y-3'>
                   {pinnedSessions.map((session) => (
@@ -410,10 +413,11 @@ export function DashboardPage() {
                     />
                   ))}
                 </div>
-              </div>
+              </>
             )}
 
-            <div>
+            <>
+              <hr className='mt-6' />
               <h2 className='mb-3 text-lg font-semibold'>Recent Workouts</h2>
               {recentSessions.length === 0 && pinnedSessions.length === 0 ? (
                 <p className='text-center text-muted-foreground py-8'>
@@ -433,7 +437,7 @@ export function DashboardPage() {
                   ))}
                 </div>
               )}
-            </div>
+            </>
           </>
         )}
       </div>

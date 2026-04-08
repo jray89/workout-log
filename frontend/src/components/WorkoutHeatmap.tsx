@@ -11,26 +11,13 @@ interface Props {
 
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const SHORT_DAYS = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
-const MONTHS = [
-  'Jan',
-  'Feb',
-  'Mar',
-  'Apr',
-  'May',
-  'Jun',
-  'Jul',
-  'Aug',
-  'Sep',
-  'Oct',
-  'Nov',
-  'Dec',
-];
+const MONTHS = ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'];
 
 function cellColor(count: number): string {
   if (count === 0) return 'bg-muted';
-  if (count === 1) return 'bg-green-200 dark:bg-green-900';
-  if (count === 2) return 'bg-green-400 dark:bg-green-700';
-  return 'bg-green-600 dark:bg-green-500';
+  if (count === 1) return 'bg-orange-200 dark:bg-orange-900';
+  if (count === 2) return 'bg-orange-400 dark:bg-orange-700';
+  return 'bg-orange-600 dark:bg-orange-500';
 }
 
 function parseLocalDate(dateStr: string): Date {
@@ -93,7 +80,7 @@ export function WorkoutHeatmap({ activity }: Props) {
               {weeks.map((_, wi) => (
                 <div
                   key={wi}
-                  className='w-3 text-[10px] text-muted-foreground leading-none'
+                  className='w-3 text-[10px] text-muted-foreground leading-none text-center'
                 >
                   {monthLabels[wi] ?? ''}
                 </div>
