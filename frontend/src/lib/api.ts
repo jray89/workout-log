@@ -74,7 +74,7 @@ export const api = {
   getWorkoutSession: (id: number) =>
     request<WorkoutSession>(`/workout_sessions/${id}`),
 
-  createWorkoutSession: (data: { name?: string }) =>
+  createWorkoutSession: (data: { name?: string; session_type?: string }) =>
     request<WorkoutSession>("/workout_sessions", {
       method: "POST",
       body: JSON.stringify(data),
@@ -200,6 +200,8 @@ export interface WorkoutSession {
   notes: string | null;
   completed_at: string | null;
   pinned: boolean;
+  session_type: 'strength' | 'cardio';
+  distance: number | null;
   created_at: string;
   exercises: WorkoutSessionExercise[];
 }

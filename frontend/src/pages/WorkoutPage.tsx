@@ -44,6 +44,7 @@ export function WorkoutPage() {
   const [newExerciseEquipment, setNewExerciseEquipment] = useState('');
   const [createError, setCreateError] = useState('');
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
+  const [localDistance, setLocalDistance] = useState('');
 
   const fetchSession = useCallback(async () => {
     if (!id) return;
@@ -58,6 +59,12 @@ export function WorkoutPage() {
   useEffect(() => {
     fetchSession();
   }, [fetchSession]);
+
+  useEffect(() => {
+    if (session) {
+      setLocalDistance(session.distance?.toString() ?? '');
+    }
+  }, [session]);
 
   useEffect(() => {
     if (showExercisePicker && exercises.length === 0) {
@@ -130,6 +137,14 @@ export function WorkoutPage() {
     await fetchSession();
   }
 
+  async function saveDistance(value: string) {
+    if (!session) return;
+    const distance = value ? parseFloat(value) : null;
+    if (distance === session.distance) return;
+    await api.updateWorkoutSession(session.id, { distance } as Partial<WorkoutSession>);
+    await fetchSession();
+  }
+
   async function finishWorkout() {
     if (!session) return;
     await api.updateWorkoutSession(session.id, {
@@ -176,6 +191,7 @@ export function WorkoutPage() {
   }
 
   const isCompleted = !!session.completed_at;
+  const isCardio = session.session_type === 'cardio';
 
   const filteredExercises = exercises.filter(
     (e) =>
@@ -254,6 +270,26 @@ export function WorkoutPage() {
               day: 'numeric',
             })}
           </p>
+          {isCardio && !isCompleted && (
+            <div className='flex items-center gap-2 mt-1'>
+              <Input
+                type='number'
+                placeholder='Distance'
+                value={localDistance}
+                onChange={(e) => setLocalDistance(e.target.value)}
+                onBlur={(e) => saveDistance(e.target.value)}
+                className='h-7 w-24 text-xs'
+                step='0.1'
+                min='0'
+              />
+              <span className='text-xs text-muted-foreground'>mi</span>
+            </div>
+          )}
+          {isCardio && isCompleted && session.distance && (
+            <p className='text-xs text-muted-foreground mt-1'>
+              {session.distance} mi
+            </p>
+          )}
         </div>
         {!isCompleted && (
           <div className='flex flex-col items-end gap-1 sm:flex-row sm:items-center sm:gap-2'>
@@ -277,6 +313,8 @@ export function WorkoutPage() {
       </div>
 
       <div className='p-4'>
+      {!isCardio && (
+      <>
       <div className='space-y-4'>
         {session.exercises.map((wse) => (
           <div key={wse.id} className='grid grid-cols-1 md:grid-cols-2 gap-4'>
@@ -436,6 +474,8 @@ export function WorkoutPage() {
             ))}
           </CardContent>
         </Card>
+      )}
+      </>
       )}
       </div>
     </div>

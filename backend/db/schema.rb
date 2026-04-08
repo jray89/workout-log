@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_07_000001) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_08_000001) do
   create_table "exercise_sets", force: :cascade do |t|
     t.boolean "completed", default: false, null: false
     t.datetime "created_at", null: false
@@ -67,9 +67,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_07_000001) do
   create_table "workout_sessions", force: :cascade do |t|
     t.datetime "completed_at"
     t.datetime "created_at", null: false
+    t.decimal "distance"
     t.string "name"
     t.text "notes"
     t.boolean "pinned", default: false, null: false
+    t.string "session_type", default: "strength", null: false
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
     t.index ["user_id"], name: "index_workout_sessions_on_user_id"

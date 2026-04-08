@@ -40,7 +40,8 @@ module Api
 
       def duplicate
         new_session = current_user.workout_sessions.new(
-          name: @workout_session.name
+          name: @workout_session.name,
+          session_type: @workout_session.session_type
         )
 
         if new_session.save
@@ -76,7 +77,7 @@ module Api
       end
 
       def session_params
-        params.permit(:name, :notes, :pinned, :completed_at)
+        params.permit(:name, :notes, :pinned, :completed_at, :session_type, :distance)
       end
 
       def session_json(session)
@@ -86,6 +87,8 @@ module Api
           notes: session.notes,
           completed_at: session.completed_at,
           pinned: session.pinned,
+          session_type: session.session_type,
+          distance: session.distance&.to_f,
           created_at: session.created_at,
           exercises: session.workout_session_exercises.map { |wse|
             {

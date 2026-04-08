@@ -24,6 +24,7 @@ import {
   Flame,
   Dumbbell,
   Tally5,
+  Footprints,
 } from 'lucide-react';
 
 const MILESTONES = [10, 25, 50, 100, 200, 500, 1000];
@@ -86,6 +87,14 @@ export function DashboardPage() {
     navigate(`/workout/${session.id}`);
   }
 
+  async function startCardioWorkout() {
+    const session = await api.createWorkoutSession({
+      name: `Cardio ${new Date().toLocaleDateString()}`,
+      session_type: 'cardio',
+    });
+    navigate(`/workout/${session.id}`);
+  }
+
   async function completeSession(id: number) {
     const updated = await api.updateWorkoutSession(id, {
       completed_at: new Date().toISOString(),
@@ -143,10 +152,16 @@ export function DashboardPage() {
           </div>
         </div>
 
-        <Button onClick={startNewWorkout} className='w-full' size='lg'>
-          <Plus className='mr-2 h-5 w-5' />
-          Start New Workout
-        </Button>
+        <div className='flex gap-2'>
+          <Button onClick={startNewWorkout} className='flex-1' size='lg'>
+            <Plus className='mr-2 h-5 w-5' />
+            Start Workout
+          </Button>
+          <Button onClick={startCardioWorkout} variant='outline' size='lg'>
+            <Footprints className='mr-2 h-5 w-5' />
+            Start Cardio
+          </Button>
+        </div>
       </div>
 
       <div className='p-4 space-y-4'>

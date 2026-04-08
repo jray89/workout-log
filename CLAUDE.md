@@ -88,6 +88,7 @@ Exercise (shared library + user-created custom exercises)
 WorkoutSession
   belongs_to :user
   has_many :workout_session_exercises (ordered by position)
+  fields: session_type (string: "strength"|"cardio", default "strength"), distance (decimal, nullable — miles, cardio only)
 
 WorkoutSessionExercise (join table)
   belongs_to :workout_session
