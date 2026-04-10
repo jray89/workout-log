@@ -22,10 +22,31 @@ import {
   X,
   Check,
 } from 'lucide-react';
-import { formatElapsed } from '@/lib/timeUtils';
+import {
+  duration,
+  formatDuration,
+  formatElapsed,
+  timeDiffMilliseconds,
+} from '@/lib/timeUtils';
 
-const MUSCLE_GROUPS = ['Chest', 'Back', 'Legs', 'Shoulders', 'Biceps', 'Triceps', 'Core', 'Other'];
-const EQUIPMENT_TYPES = ['Barbell', 'Dumbbell', 'Cable', 'Machine', 'Bodyweight', 'Other'];
+const MUSCLE_GROUPS = [
+  'Chest',
+  'Back',
+  'Legs',
+  'Shoulders',
+  'Biceps',
+  'Triceps',
+  'Core',
+  'Other',
+];
+const EQUIPMENT_TYPES = [
+  'Barbell',
+  'Dumbbell',
+  'Cable',
+  'Machine',
+  'Bodyweight',
+  'Other',
+];
 
 export function WorkoutPage() {
   const { id } = useParams<{ id: string }>();
@@ -75,7 +96,8 @@ export function WorkoutPage() {
   useEffect(() => {
     if (!session || session.completed_at) return;
     const start = new Date(session.created_at).getTime();
-    const tick = () => setElapsedSeconds(Math.floor((Date.now() - start) / 1000));
+    const tick = () =>
+      setElapsedSeconds(Math.floor((Date.now() - start) / 1000));
     tick();
     const interval = setInterval(tick, 1000);
     return () => clearInterval(interval);
@@ -105,7 +127,9 @@ export function WorkoutPage() {
       setNewExerciseMuscleGroup('');
       setNewExerciseEquipment('');
     } catch (err) {
-      setCreateError(err instanceof Error ? err.message : 'Failed to create exercise');
+      setCreateError(
+        err instanceof Error ? err.message : 'Failed to create exercise',
+      );
     }
   }
 
@@ -141,7 +165,9 @@ export function WorkoutPage() {
     if (!session) return;
     const distance = value ? parseFloat(value) : null;
     if (distance === session.distance) return;
-    await api.updateWorkoutSession(session.id, { distance } as Partial<WorkoutSession>);
+    await api.updateWorkoutSession(session.id, {
+      distance,
+    } as Partial<WorkoutSession>);
     await fetchSession();
   }
 
@@ -192,6 +218,14 @@ export function WorkoutPage() {
 
   const isCompleted = !!session.completed_at;
   const isCardio = session.session_type === 'cardio';
+  const workoutDuration =
+    isCompleted && session.completed_at
+      ? timeDiffMilliseconds(session.created_at, session.completed_at)
+      : null;
+  const workoutDurationString =
+    isCompleted && session.completed_at
+      ? duration(session.created_at, session.completed_at)
+      : null;
 
   const filteredExercises = exercises.filter(
     (e) =>
@@ -212,271 +246,299 @@ export function WorkoutPage() {
   return (
     <div className='mx-auto max-w-2xl'>
       <div className='sticky top-0 z-10 border-b bg-background px-4 pb-4 pt-4'>
-      <div className='flex items-center gap-3'>
-        <Button variant='ghost' size='icon' onClick={() => navigate('/')}>
-          <ArrowLeft className='h-5 w-5' />
-        </Button>
-        <div className='flex-1'>
-          {isEditingName ? (
-            <div className='flex items-center gap-2'>
-              <Input
-                value={editedName}
-                onChange={(e) => setEditedName(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') saveWorkoutName();
-                  if (e.key === 'Escape') cancelEditingName();
-                }}
-                className='h-8 text-lg font-bold'
-                autoFocus
-              />
-              <Button
-                variant='ghost'
-                size='icon'
-                className='h-8 w-8'
-                onClick={cancelEditingName}
-              >
-                <X className='h-4 w-4' />
-              </Button>
-              <Button
-                variant='ghost'
-                size='icon'
-                className='h-8 w-8'
-                onClick={saveWorkoutName}
-              >
-                <Check className='h-4 w-4' />
-              </Button>
-            </div>
-          ) : (
-            <div className='flex items-center gap-2'>
-              <h1 className='text-xl font-bold'>
-                {session.name || 'Untitled Workout'}
-              </h1>
-              {!isCompleted && (
+        <div className='flex items-center gap-3'>
+          <Button variant='ghost' size='icon' onClick={() => navigate('/')}>
+            <ArrowLeft className='h-5 w-5' />
+          </Button>
+          <div className='flex-1'>
+            {isEditingName ? (
+              <div className='flex items-center gap-2'>
+                <Input
+                  value={editedName}
+                  onChange={(e) => setEditedName(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') saveWorkoutName();
+                    if (e.key === 'Escape') cancelEditingName();
+                  }}
+                  className='h-8 text-lg font-bold'
+                  autoFocus
+                />
                 <Button
                   variant='ghost'
                   size='icon'
-                  className='h-6 w-6'
-                  onClick={startEditingName}
+                  className='h-8 w-8'
+                  onClick={cancelEditingName}
                 >
-                  <Pencil className='h-3 w-3' />
+                  <X className='h-4 w-4' />
                 </Button>
-              )}
-            </div>
-          )}
-          <p className='text-xs text-muted-foreground'>
-            {new Date(session.created_at).toLocaleDateString(undefined, {
-              weekday: 'long',
-              month: 'long',
-              day: 'numeric',
-            })}
-          </p>
-          {isCardio && !isCompleted && (
-            <div className='flex items-center gap-2 mt-1'>
-              <Input
-                type='number'
-                placeholder='Distance'
-                value={localDistance}
-                onChange={(e) => setLocalDistance(e.target.value)}
-                onBlur={(e) => saveDistance(e.target.value)}
-                className='h-7 w-24 text-xs'
-                step='0.1'
-                min='0'
-              />
-              <span className='text-xs text-muted-foreground'>mi</span>
-            </div>
-          )}
-          {isCardio && isCompleted && session.distance && (
-            <p className='text-xs text-muted-foreground mt-1'>
-              {session.distance} mi
+                <Button
+                  variant='ghost'
+                  size='icon'
+                  className='h-8 w-8'
+                  onClick={saveWorkoutName}
+                >
+                  <Check className='h-4 w-4' />
+                </Button>
+              </div>
+            ) : (
+              <div className='flex items-center gap-2'>
+                <h1 className='text-xl font-bold'>
+                  {session.name || 'Untitled Workout'}
+                </h1>
+                {!isCompleted && (
+                  <Button
+                    variant='ghost'
+                    size='icon'
+                    className='h-6 w-6'
+                    onClick={startEditingName}
+                  >
+                    <Pencil className='h-3 w-3' />
+                  </Button>
+                )}
+              </div>
+            )}
+            <p className='text-xs text-muted-foreground'>
+              {new Date(session.created_at).toLocaleDateString(undefined, {
+                weekday: 'long',
+                month: 'long',
+                day: 'numeric',
+              })}
             </p>
+          </div>
+          {!isCompleted && (
+            <div className='flex flex-col items-end gap-1 sm:flex-row sm:items-center sm:gap-2'>
+              <span className='font-mono text-sm text-muted-foreground tabular-nums'>
+                {formatElapsed(elapsedSeconds)}
+              </span>
+              <Button onClick={finishWorkout} variant='default' size='sm'>
+                <CheckCircle2 className='mr-1 h-4 w-4' />
+                Finish
+              </Button>
+            </div>
           )}
         </div>
-        {!isCompleted && (
-          <div className='flex flex-col items-end gap-1 sm:flex-row sm:items-center sm:gap-2'>
-            <span className='font-mono text-sm text-muted-foreground tabular-nums'>
-              {formatElapsed(elapsedSeconds)}
-            </span>
-            <Button onClick={finishWorkout} variant='default' size='sm'>
-              <CheckCircle2 className='mr-1 h-4 w-4' />
-              Finish
-            </Button>
+
+        {isCompleted && (
+          <div className='mt-3 rounded-md bg-secondary p-3 text-center text-sm'>
+            Workout completed on{' '}
+            {new Date(session.completed_at!).toLocaleDateString()}
           </div>
         )}
       </div>
 
-      {isCompleted && (
-        <div className='mt-3 rounded-md bg-secondary p-3 text-center text-sm'>
-          Workout completed on{' '}
-          {new Date(session.completed_at!).toLocaleDateString()}
-        </div>
-      )}
-      </div>
-
       <div className='p-4'>
-      {!isCardio && (
-      <>
-      <div className='space-y-4'>
-        {session.exercises.map((wse) => (
-          <div key={wse.id} className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-            <ExerciseCard
-              wse={wse}
-              disabled={isCompleted}
-              onAddSet={() => addSet(wse)}
-              onUpdateSet={(
-                setId: number,
-                data: { reps?: number; weight?: number; completed?: boolean },
-              ) => updateSet(wse.id, setId, data)}
-              onDeleteSet={(setId: number) => deleteSet(wse.id, setId)}
-              onRemove={() => removeExercise(wse.id)}
+        {isCardio && !isCompleted && (
+          <div className='flex items-center gap-2 mt-1'>
+            <Input
+              type='number'
+              placeholder='Distance'
+              value={localDistance}
+              onChange={(e) => setLocalDistance(e.target.value)}
+              onBlur={(e) => saveDistance(e.target.value)}
+              step='0.1'
+              min='0'
             />
-            <ExerciseHistoryCard
-              exerciseId={wse.exercise.id}
-              exerciseName={wse.exercise.name}
-            />
+            <span className='text-xs text-muted-foreground'>mi</span>
           </div>
-        ))}
-      </div>
-
-      {!isCompleted && !showExercisePicker && (
-        <Button
-          onClick={() => setShowExercisePicker(true)}
-          variant='outline'
-          className='mt-4 w-full'
-        >
-          <Plus className='mr-2 h-4 w-4' />
-          Add Exercise
-        </Button>
-      )}
-
-      {showExercisePicker && (
-        <Card className='mt-4'>
-          <CardHeader>
-            <div className='flex items-center justify-between'>
-              <CardTitle className='text-base'>Add Exercise</CardTitle>
-              <Button
-                variant='ghost'
-                size='sm'
-                onClick={() => {
-                  setShowExercisePicker(false);
-                  setSearchQuery('');
-                  setShowCreateForm(false);
-                  setNewExerciseName('');
-                  setNewExerciseMuscleGroup('');
-                  setNewExerciseEquipment('');
-                  setCreateError('');
-                }}
-              >
-                Cancel
-              </Button>
-            </div>
-            <div className='relative mt-2'>
-              <Search className='absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground' />
-              <Input
-                placeholder='Search exercises...'
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className='pl-9'
-                autoFocus
-              />
-            </div>
-          </CardHeader>
-          <CardContent className='max-h-80 overflow-y-auto'>
-            {showCreateForm ? (
-              <div className='space-y-3 pb-2'>
-                <Input
-                  placeholder='Exercise name'
-                  value={newExerciseName}
-                  onChange={(e) => setNewExerciseName(e.target.value)}
-                  autoFocus
-                />
-                <div className='grid grid-cols-2 gap-2'>
-                  <select
-                    value={newExerciseMuscleGroup}
-                    onChange={(e) => setNewExerciseMuscleGroup(e.target.value)}
-                    className='flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring'
-                  >
-                    <option value=''>Muscle group</option>
-                    {MUSCLE_GROUPS.map((g) => (
-                      <option key={g} value={g}>{g}</option>
-                    ))}
-                  </select>
-                  <select
-                    value={newExerciseEquipment}
-                    onChange={(e) => setNewExerciseEquipment(e.target.value)}
-                    className='flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring'
-                  >
-                    <option value=''>Equipment</option>
-                    {EQUIPMENT_TYPES.map((e) => (
-                      <option key={e} value={e}>{e}</option>
-                    ))}
-                  </select>
-                </div>
-                {createError && (
-                  <p className='text-sm text-destructive'>{createError}</p>
-                )}
-                <div className='flex gap-2'>
-                  <Button
-                    variant='outline'
-                    size='sm'
-                    className='flex-1'
-                    onClick={() => {
-                      setShowCreateForm(false);
-                      setNewExerciseName('');
-                      setNewExerciseMuscleGroup('');
-                      setNewExerciseEquipment('');
-                      setCreateError('');
-                    }}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    size='sm'
-                    className='flex-1'
-                    disabled={!newExerciseName.trim()}
-                    onClick={createCustomExercise}
-                  >
-                    Create & Add
-                  </Button>
-                </div>
-              </div>
-            ) : (
-              user?.admin && (
-                <button
-                  onClick={() => {
-                    setShowCreateForm(true);
-                    setNewExerciseName(searchQuery);
-                  }}
-                  className='mb-3 flex w-full items-center gap-2 rounded-md border border-dashed border-muted-foreground/30 px-2 py-2 text-sm text-muted-foreground hover:bg-accent hover:text-foreground'
-                >
-                  <Plus className='h-4 w-4' />
-                  Create new exercise{searchQuery ? `: "${searchQuery}"` : ''}
-                </button>
-              )
+        )}
+        {isCardio && isCompleted && (
+          <div className='flex flex-wrap gap-2 items-center justify-center'>
+            {workoutDurationString && (
+              <Badge variant='outline'>{workoutDurationString}</Badge>
             )}
-            {!showCreateForm && Object.entries(groupedExercises).map(([group, exs]) => (
-              <div key={group} className='mb-3'>
-                <p className='mb-1 text-xs font-semibold uppercase text-muted-foreground'>
-                  {group}
-                </p>
-                {exs.map((ex) => (
-                  <button
-                    key={ex.id}
-                    onClick={() => addExercise(ex.id)}
-                    className='flex w-full items-center justify-between rounded-md px-2 py-2 text-sm hover:bg-accent'
-                  >
-                    <span>{ex.name}</span>
-                    <Badge variant='secondary' className='text-xs'>
-                      {ex.equipment}
-                    </Badge>
-                  </button>
-                ))}
+            {session.distance && (
+              <Badge variant='secondary'>{session.distance} mi</Badge>
+            )}
+            {workoutDuration && session.distance && (
+              <div className='text-sm text-muted-foreground truncate'>
+                {formatDuration(workoutDuration / session.distance, true)}/mi
               </div>
-            ))}
-          </CardContent>
-        </Card>
-      )}
-      </>
-      )}
+            )}
+          </div>
+        )}
+        {!isCardio && (
+          <>
+            <div className='space-y-4'>
+              {session.exercises.map((wse) => (
+                <div
+                  key={wse.id}
+                  className='grid grid-cols-1 md:grid-cols-2 gap-4'
+                >
+                  <ExerciseCard
+                    wse={wse}
+                    disabled={isCompleted}
+                    onAddSet={() => addSet(wse)}
+                    onUpdateSet={(
+                      setId: number,
+                      data: {
+                        reps?: number;
+                        weight?: number;
+                        completed?: boolean;
+                      },
+                    ) => updateSet(wse.id, setId, data)}
+                    onDeleteSet={(setId: number) => deleteSet(wse.id, setId)}
+                    onRemove={() => removeExercise(wse.id)}
+                  />
+                  <ExerciseHistoryCard
+                    exerciseId={wse.exercise.id}
+                    exerciseName={wse.exercise.name}
+                  />
+                </div>
+              ))}
+            </div>
+
+            {!isCompleted && !showExercisePicker && (
+              <Button
+                onClick={() => setShowExercisePicker(true)}
+                variant='outline'
+                className='mt-4 w-full'
+              >
+                <Plus className='mr-2 h-4 w-4' />
+                Add Exercise
+              </Button>
+            )}
+
+            {showExercisePicker && (
+              <Card className='mt-4'>
+                <CardHeader>
+                  <div className='flex items-center justify-between'>
+                    <CardTitle className='text-base'>Add Exercise</CardTitle>
+                    <Button
+                      variant='ghost'
+                      size='sm'
+                      onClick={() => {
+                        setShowExercisePicker(false);
+                        setSearchQuery('');
+                        setShowCreateForm(false);
+                        setNewExerciseName('');
+                        setNewExerciseMuscleGroup('');
+                        setNewExerciseEquipment('');
+                        setCreateError('');
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                  <div className='relative mt-2'>
+                    <Search className='absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground' />
+                    <Input
+                      placeholder='Search exercises...'
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className='pl-9'
+                      autoFocus
+                    />
+                  </div>
+                </CardHeader>
+                <CardContent className='max-h-80 overflow-y-auto'>
+                  {showCreateForm ? (
+                    <div className='space-y-3 pb-2'>
+                      <Input
+                        placeholder='Exercise name'
+                        value={newExerciseName}
+                        onChange={(e) => setNewExerciseName(e.target.value)}
+                        autoFocus
+                      />
+                      <div className='grid grid-cols-2 gap-2'>
+                        <select
+                          value={newExerciseMuscleGroup}
+                          onChange={(e) =>
+                            setNewExerciseMuscleGroup(e.target.value)
+                          }
+                          className='flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring'
+                        >
+                          <option value=''>Muscle group</option>
+                          {MUSCLE_GROUPS.map((g) => (
+                            <option key={g} value={g}>
+                              {g}
+                            </option>
+                          ))}
+                        </select>
+                        <select
+                          value={newExerciseEquipment}
+                          onChange={(e) =>
+                            setNewExerciseEquipment(e.target.value)
+                          }
+                          className='flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring'
+                        >
+                          <option value=''>Equipment</option>
+                          {EQUIPMENT_TYPES.map((e) => (
+                            <option key={e} value={e}>
+                              {e}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      {createError && (
+                        <p className='text-sm text-destructive'>
+                          {createError}
+                        </p>
+                      )}
+                      <div className='flex gap-2'>
+                        <Button
+                          variant='outline'
+                          size='sm'
+                          className='flex-1'
+                          onClick={() => {
+                            setShowCreateForm(false);
+                            setNewExerciseName('');
+                            setNewExerciseMuscleGroup('');
+                            setNewExerciseEquipment('');
+                            setCreateError('');
+                          }}
+                        >
+                          Cancel
+                        </Button>
+                        <Button
+                          size='sm'
+                          className='flex-1'
+                          disabled={!newExerciseName.trim()}
+                          onClick={createCustomExercise}
+                        >
+                          Create & Add
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    user?.admin && (
+                      <button
+                        onClick={() => {
+                          setShowCreateForm(true);
+                          setNewExerciseName(searchQuery);
+                        }}
+                        className='mb-3 flex w-full items-center gap-2 rounded-md border border-dashed border-muted-foreground/30 px-2 py-2 text-sm text-muted-foreground hover:bg-accent hover:text-foreground'
+                      >
+                        <Plus className='h-4 w-4' />
+                        Create new exercise
+                        {searchQuery ? `: "${searchQuery}"` : ''}
+                      </button>
+                    )
+                  )}
+                  {!showCreateForm &&
+                    Object.entries(groupedExercises).map(([group, exs]) => (
+                      <div key={group} className='mb-3'>
+                        <p className='mb-1 text-xs font-semibold uppercase text-muted-foreground'>
+                          {group}
+                        </p>
+                        {exs.map((ex) => (
+                          <button
+                            key={ex.id}
+                            onClick={() => addExercise(ex.id)}
+                            className='flex w-full items-center justify-between rounded-md px-2 py-2 text-sm hover:bg-accent'
+                          >
+                            <span>{ex.name}</span>
+                            <Badge variant='secondary' className='text-xs'>
+                              {ex.equipment}
+                            </Badge>
+                          </button>
+                        ))}
+                      </div>
+                    ))}
+                </CardContent>
+              </Card>
+            )}
+          </>
+        )}
       </div>
     </div>
   );
