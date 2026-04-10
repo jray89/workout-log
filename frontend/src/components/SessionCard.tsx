@@ -1,5 +1,9 @@
 import { type WorkoutSession } from '@/lib/api';
-import { duration } from '@/lib/timeUtils';
+import {
+  duration,
+  formatDuration,
+  timeDiffMilliseconds,
+} from '@/lib/timeUtils';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -39,6 +43,10 @@ export function SessionCard({
   );
 
   const workoutDuration =
+    isCompleted && session.completed_at
+      ? timeDiffMilliseconds(session.created_at, session.completed_at)
+      : null;
+  const workoutDurationString =
     isCompleted && session.completed_at
       ? duration(session.created_at, session.completed_at)
       : null;
@@ -110,7 +118,8 @@ export function SessionCard({
                 <AlertDialogHeader>
                   <AlertDialogTitle>Delete workout?</AlertDialogTitle>
                   <AlertDialogDescription>
-                    "{session.name || 'Untitled Workout'}" will be permanently deleted. This cannot be undone.
+                    "{session.name || 'Untitled Workout'}" will be permanently
+                    deleted. This cannot be undone.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
@@ -129,11 +138,16 @@ export function SessionCard({
       </CardHeader>
       <CardContent>
         <div className='flex flex-wrap gap-2 items-center'>
-          {workoutDuration && (
-            <Badge variant='outline'>{workoutDuration}</Badge>
+          {workoutDurationString && (
+            <Badge variant='outline'>{workoutDurationString}</Badge>
           )}
           {session.distance && (
-            <Badge variant='outline'>{session.distance} mi</Badge>
+            <Badge variant='secondary'>{session.distance} mi</Badge>
+          )}
+          {workoutDuration && session.distance && (
+            <div className='text-sm text-muted-foreground truncate'>
+              {formatDuration(workoutDuration / session.distance, true)}/mi
+            </div>
           )}
           {totalSets > 0 && (
             <Badge variant='secondary'>

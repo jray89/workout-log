@@ -14,7 +14,6 @@ import {
 } from '@/components/ui/chart';
 import { BarChart, Bar, XAxis, YAxis } from 'recharts';
 import {
-  Plus,
   LogOut,
   Settings,
   TrendingUp,
@@ -23,11 +22,15 @@ import {
   Trophy,
   Flame,
   Dumbbell,
-  Tally5,
   Footprints,
+  Calendar,
+  Hash,
 } from 'lucide-react';
 
-const MILESTONES = [10, 25, 50, 100, 200, 500, 1000];
+const MILESTONES = [
+  10, 25, 50, 75, 100, 125, 150, 175, 200, 225, 250, 275, 300, 325, 350, 375,
+  400, 425, 450, 475, 500,
+];
 
 function getMilestoneInfo(total: number): {
   reached: number | null;
@@ -154,7 +157,7 @@ export function DashboardPage() {
 
         <div className='flex gap-2'>
           <Button onClick={startNewWorkout} className='flex-1' size='lg'>
-            <Plus className='mr-2 h-5 w-5' />
+            <Dumbbell className='mr-2 h-5 w-5' />
             Start Workout
           </Button>
           <Button onClick={startCardioWorkout} variant='outline' size='lg'>
@@ -282,7 +285,7 @@ export function DashboardPage() {
             <Card className='col-span-1'>
               <CardHeader>
                 <CardTitle className='text-xs font-medium text-muted-foreground uppercase tracking-wide flex items-center gap-1'>
-                  <Dumbbell className='h-3 w-3' /> This Week
+                  <Calendar className='h-3 w-3' /> This Week
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -340,7 +343,7 @@ export function DashboardPage() {
             <Card className='col-span-1'>
               <CardHeader>
                 <CardTitle className='text-xs font-medium text-muted-foreground uppercase tracking-wide flex items-center gap-1'>
-                  <Tally5 className='h-3 w-3' /> Workouts
+                  <Hash className='h-3 w-3' /> Workouts
                 </CardTitle>
               </CardHeader>
               <CardContent>
