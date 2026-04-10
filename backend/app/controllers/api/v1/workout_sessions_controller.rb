@@ -41,7 +41,8 @@ module Api
       def duplicate
         new_session = current_user.workout_sessions.new(
           name: @workout_session.name,
-          session_type: @workout_session.session_type
+          session_type: @workout_session.session_type,
+          distance: @workout_session.distance
         )
 
         if new_session.save
