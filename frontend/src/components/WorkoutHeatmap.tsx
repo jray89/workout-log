@@ -131,12 +131,20 @@ export function WorkoutHeatmap({ activity }: Props) {
             </div>
 
             {/* Legend */}
-            <div className='flex items-center gap-1.5 pl-7 mt-1'>
-              <span className='text-[10px] text-muted-foreground'>Less</span>
+            <div className='flex items-center pl-7 pr-1 mt-1'>
+              <span className='text-[10px] text-muted-foreground pr-3'>
+                Less
+              </span>
               {[0, 1, 2, 3].map((n) => (
-                <div key={n} className={`w-3 h-3 rounded-sm ${cellColor(n)}`} />
+                <div key={n} className='flex-1'>
+                  <div
+                    className={`m-auto w-3 h-3 rounded-sm ${cellColor(n)}`}
+                  />
+                </div>
               ))}
-              <span className='text-[10px] text-muted-foreground'>More</span>
+              <span className='text-[10px] text-muted-foreground pl-3'>
+                More
+              </span>
             </div>
           </div>
         </div>

@@ -103,7 +103,6 @@ export function DashboardPage() {
       completed_at: new Date().toISOString(),
     });
     setSessions((prev) => prev.map((s) => (s.id === updated.id ? updated : s)));
-    // Refresh stats after completing a session
     fetchStats();
   }
 
@@ -115,6 +114,7 @@ export function DashboardPage() {
   async function deleteSession(id: number) {
     await api.deleteWorkoutSession(id);
     setSessions((prev) => prev.filter((s) => s.id !== id));
+    fetchStats();
   }
 
   const pinnedSessions = sessions.filter((s) => s.pinned);
@@ -156,12 +156,17 @@ export function DashboardPage() {
         </div>
 
         <div className='flex gap-2'>
-          <Button onClick={startNewWorkout} className='flex-1' size='lg'>
-            <Dumbbell className='mr-2 h-5 w-5' />
-            Start Workout
+          <Button onClick={startNewWorkout} className='flex-3' size='lg'>
+            <Dumbbell className='h-5 w-5' />
+            Start Weight Lifting
           </Button>
-          <Button onClick={startCardioWorkout} variant='outline' size='lg'>
-            <Footprints className='mr-2 h-5 w-5' />
+          <Button
+            onClick={startCardioWorkout}
+            className='flex-2'
+            variant='outline'
+            size='lg'
+          >
+            <Footprints className='h-5 w-5' />
             Start Cardio
           </Button>
         </div>

@@ -65,7 +65,7 @@ export function WorkoutPage() {
   const [newExerciseEquipment, setNewExerciseEquipment] = useState('');
   const [createError, setCreateError] = useState('');
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
-  const [localDistance, setLocalDistance] = useState('');
+  const [localDistance, setLocalDistance] = useState<string | undefined>(undefined);
 
   const fetchSession = useCallback(async () => {
     if (!id) return;
@@ -81,11 +81,6 @@ export function WorkoutPage() {
     fetchSession();
   }, [fetchSession]);
 
-  useEffect(() => {
-    if (session) {
-      setLocalDistance(session.distance?.toString() ?? '');
-    }
-  }, [session]);
 
   useEffect(() => {
     if (showExercisePicker && exercises.length === 0) {
@@ -168,6 +163,7 @@ export function WorkoutPage() {
     await api.updateWorkoutSession(session.id, {
       distance,
     } as Partial<WorkoutSession>);
+    setLocalDistance(undefined);
     await fetchSession();
   }
 
@@ -332,7 +328,7 @@ export function WorkoutPage() {
             <Input
               type='number'
               placeholder='Distance'
-              value={localDistance}
+              value={localDistance ?? session?.distance?.toString() ?? ''}
               onChange={(e) => setLocalDistance(e.target.value)}
               onBlur={(e) => saveDistance(e.target.value)}
               step='0.1'

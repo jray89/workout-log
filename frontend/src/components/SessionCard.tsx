@@ -145,7 +145,7 @@ export function SessionCard({
             <Badge variant='secondary'>{session.distance} mi</Badge>
           )}
           {workoutDuration && session.distance && (
-            <div className='text-sm text-muted-foreground truncate'>
+            <div className='flex-1 text-sm text-muted-foreground truncate'>
               {formatDuration(workoutDuration / session.distance, true)}/mi
             </div>
           )}
@@ -155,7 +155,7 @@ export function SessionCard({
             </Badge>
           )}
           {exerciseNames.length > 0 && (
-            <div className='text-sm text-muted-foreground truncate'>
+            <div className='flex-1 text-sm text-muted-foreground truncate'>
               {exerciseNames.join(', ')}
             </div>
           )}
