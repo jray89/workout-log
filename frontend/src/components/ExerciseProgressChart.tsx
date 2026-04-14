@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { api, type ExerciseHistoryEntry } from '@/lib/api';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { LineChart, Line, XAxis, YAxis } from 'recharts';
 import {
   ChartContainer,
@@ -8,13 +7,15 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from './ui/chart';
+import { Card, CardContent, CardHeader } from './ui/card';
 
-interface ExerciseHistoryCardProps {
+interface ExerciseProgressChartProps {
   exerciseId: number;
-  exerciseName: string;
 }
 
-export function ExerciseHistoryCard({ exerciseId }: ExerciseHistoryCardProps) {
+export function ExerciseProgressChart({
+  exerciseId,
+}: ExerciseProgressChartProps) {
   const [history, setHistory] = useState<ExerciseHistoryEntry[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -34,31 +35,17 @@ export function ExerciseHistoryCard({ exerciseId }: ExerciseHistoryCardProps) {
 
   if (loading) {
     return (
-      <Card className='hidden md:block'>
-        <CardHeader>
-          <CardTitle className='text-base'>Progress</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className='h-48 flex items-center justify-center text-sm text-muted-foreground'>
-            Loading...
-          </div>
-        </CardContent>
-      </Card>
+      <div className='h-48 flex items-center justify-center text-sm text-muted-foreground'>
+        Loading...
+      </div>
     );
   }
 
   if (history.length === 0) {
     return (
-      <Card className='hidden md:block'>
-        <CardHeader>
-          <CardTitle className='text-base'>Progress</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className='h-48 flex items-center justify-center text-sm text-muted-foreground'>
-            No history available
-          </div>
-        </CardContent>
-      </Card>
+      <div className='h-48 flex items-center justify-center text-sm text-muted-foreground'>
+        No history available
+      </div>
     );
   }
 
@@ -83,12 +70,8 @@ export function ExerciseHistoryCard({ exerciseId }: ExerciseHistoryCardProps) {
   const minWeight = Math.min(...history.map((entry) => entry.max_weight));
 
   return (
-    <Card className='hidden md:block'>
-      <CardHeader>
-        <CardTitle className='text-base'>
-          Max Weight Progress: {maxWeight}lbs
-        </CardTitle>
-      </CardHeader>
+    <Card className='bg-muted'>
+      <CardHeader>Max Weight Progress: {maxWeight}lbs</CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>
           <LineChart
@@ -108,7 +91,6 @@ export function ExerciseHistoryCard({ exerciseId }: ExerciseHistoryCardProps) {
             />
             <YAxis
               domain={[minWeight - 5, maxWeight + 5]}
-              // domain={['auto', 'auto']}
               tickCount={3}
               dataKey='weight'
               tickLine={false}

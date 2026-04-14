@@ -12,7 +12,6 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { ExerciseCard } from '@/components/ExerciseCard';
-import { ExerciseHistoryCard } from '@/components/ExerciseHistoryCard';
 import {
   ArrowLeft,
   Plus,
@@ -356,30 +355,22 @@ export function WorkoutPage() {
           <>
             <div className='space-y-4'>
               {session.exercises.map((wse) => (
-                <div
+                <ExerciseCard
                   key={wse.id}
-                  className='grid grid-cols-1 md:grid-cols-2 gap-4'
-                >
-                  <ExerciseCard
-                    wse={wse}
-                    disabled={isCompleted}
-                    onAddSet={() => addSet(wse)}
-                    onUpdateSet={(
-                      setId: number,
-                      data: {
-                        reps?: number;
-                        weight?: number;
-                        completed?: boolean;
-                      },
-                    ) => updateSet(wse.id, setId, data)}
-                    onDeleteSet={(setId: number) => deleteSet(wse.id, setId)}
-                    onRemove={() => removeExercise(wse.id)}
-                  />
-                  <ExerciseHistoryCard
-                    exerciseId={wse.exercise.id}
-                    exerciseName={wse.exercise.name}
-                  />
-                </div>
+                  wse={wse}
+                  disabled={isCompleted}
+                  onAddSet={() => addSet(wse)}
+                  onUpdateSet={(
+                    setId: number,
+                    data: {
+                      reps?: number;
+                      weight?: number;
+                      completed?: boolean;
+                    },
+                  ) => updateSet(wse.id, setId, data)}
+                  onDeleteSet={(setId: number) => deleteSet(wse.id, setId)}
+                  onRemove={() => removeExercise(wse.id)}
+                />
               ))}
             </div>
 
