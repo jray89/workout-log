@@ -4,7 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Plus, Check, Trash2 } from 'lucide-react';
+import { ExerciseProgressChart } from '@/components/ExerciseProgressChart';
+import { Plus, Check, Trash2, ChevronDown, ChevronUp } from 'lucide-react';
 
 interface ExerciseCardProps {
   wse: WorkoutSessionExercise;
@@ -30,6 +31,7 @@ export function ExerciseCard({
   const [localValues, setLocalValues] = useState<
     Record<number, { weight: string; reps: string }>
   >({});
+  const [chartOpen, setChartOpen] = useState(false);
 
   const getLocalValue = (setId: number, field: 'weight' | 'reps') => {
     // Use local value if it exists, otherwise fall back to server value
@@ -104,81 +106,105 @@ export function ExerciseCard({
         </div>
       </CardHeader>
       <CardContent>
-        {wse.sets.length > 0 && (
-          <div className='mb-2'>
-            <div className='grid grid-cols-[2rem_1fr_1fr_2rem_2rem] gap-2 text-xs font-medium text-muted-foreground mb-1'>
-              <span>Set</span>
-              <span>Weight</span>
-              <span>Reps</span>
-              <span></span>
-              <span></span>
-            </div>
-            {wse.sets.map((set) => (
-              <div
-                key={set.id}
-                className='grid grid-cols-[2rem_1fr_1fr_2rem_2rem] gap-2 items-center mb-1'
-              >
-                <span className='text-sm text-muted-foreground text-center'>
-                  {set.set_number}
-                </span>
-                <Input
-                  type='number'
-                  placeholder='lbs'
-                  value={getLocalValue(set.id, 'weight')}
-                  onChange={(e) =>
-                    updateLocalValue(set.id, 'weight', e.target.value)
-                  }
-                  onBlur={(e) => handleBlur(set.id, 'weight', e.target.value)}
-                  disabled={disabled}
-                  className='h-8 text-sm'
-                />
-                <Input
-                  type='number'
-                  placeholder='reps'
-                  value={getLocalValue(set.id, 'reps')}
-                  onChange={(e) =>
-                    updateLocalValue(set.id, 'reps', e.target.value)
-                  }
-                  onBlur={(e) => handleBlur(set.id, 'reps', e.target.value)}
-                  disabled={disabled}
-                  className='h-8 text-sm'
-                />
-                <Button
-                  variant={set.completed ? 'default' : 'outline'}
-                  size='icon'
-                  className='h-8 w-8'
-                  onClick={() =>
-                    onUpdateSet(set.id, { completed: !set.completed })
-                  }
-                  disabled={disabled}
-                >
-                  <Check className='h-3 w-3' />
-                </Button>
-                {!disabled && (
-                  <Button
-                    variant='ghost'
-                    size='icon'
-                    className='h-8 w-8 text-destructive'
-                    onClick={() => onDeleteSet(set.id)}
+        <div className='md:flex md:flex-row md:gap-4'>
+          <div className='md:flex-1 md:min-w-0'>
+            {wse.sets.length > 0 && (
+              <div className='mb-2'>
+                <div className='grid grid-cols-[2rem_1fr_1fr_2rem_2rem] gap-2 text-xs font-medium text-muted-foreground mb-1'>
+                  <span>Set</span>
+                  <span>Weight</span>
+                  <span>Reps</span>
+                  <span></span>
+                  <span></span>
+                </div>
+                {wse.sets.map((set) => (
+                  <div
+                    key={set.id}
+                    className='grid grid-cols-[2rem_1fr_1fr_2rem_2rem] gap-2 items-center mb-1'
                   >
-                    <Trash2 className='h-3 w-3' />
-                  </Button>
-                )}
+                    <span className='text-sm text-muted-foreground text-center'>
+                      {set.set_number}
+                    </span>
+                    <Input
+                      type='number'
+                      placeholder='lbs'
+                      value={getLocalValue(set.id, 'weight')}
+                      onChange={(e) =>
+                        updateLocalValue(set.id, 'weight', e.target.value)
+                      }
+                      onBlur={(e) =>
+                        handleBlur(set.id, 'weight', e.target.value)
+                      }
+                      disabled={disabled}
+                      className='h-8 text-sm'
+                    />
+                    <Input
+                      type='number'
+                      placeholder='reps'
+                      value={getLocalValue(set.id, 'reps')}
+                      onChange={(e) =>
+                        updateLocalValue(set.id, 'reps', e.target.value)
+                      }
+                      onBlur={(e) => handleBlur(set.id, 'reps', e.target.value)}
+                      disabled={disabled}
+                      className='h-8 text-sm'
+                    />
+                    <Button
+                      variant={set.completed ? 'default' : 'outline'}
+                      size='icon'
+                      className='h-8 w-8'
+                      onClick={() =>
+                        onUpdateSet(set.id, { completed: !set.completed })
+                      }
+                      disabled={disabled}
+                    >
+                      <Check className='h-3 w-3' />
+                    </Button>
+                    {!disabled && (
+                      <Button
+                        variant='ghost'
+                        size='icon'
+                        className='h-8 w-8 text-destructive'
+                        onClick={() => onDeleteSet(set.id)}
+                      >
+                        <Trash2 className='h-3 w-3' />
+                      </Button>
+                    )}
+                  </div>
+                ))}
               </div>
-            ))}
+            )}
+            {!disabled && (
+              <Button
+                variant='ghost'
+                size='sm'
+                className='w-full'
+                onClick={onAddSet}
+              >
+                <Plus className='mr-1 h-3 w-3' />
+                Add Set
+              </Button>
+            )}
           </div>
-        )}
-        {!disabled && (
-          <Button
-            variant='ghost'
-            size='sm'
-            className='w-full'
-            onClick={onAddSet}
-          >
-            <Plus className='mr-1 h-3 w-3' />
-            Add Set
-          </Button>
-        )}
+          <div className='md:flex-1 md:min-w-0'>
+            <Button
+              variant='ghost'
+              size='sm'
+              className='md:hidden w-full mt-2'
+              onClick={() => setChartOpen((v) => !v)}
+            >
+              {chartOpen ? (
+                <ChevronUp className='mr-1 h-3 w-3' />
+              ) : (
+                <ChevronDown className='mr-1 h-3 w-3' />
+              )}
+              Progress
+            </Button>
+            <div className={chartOpen ? 'block mt-2' : 'hidden md:block'}>
+              <ExerciseProgressChart exerciseId={wse.exercise.id} />
+            </div>
+          </div>
+        </div>
       </CardContent>
     </Card>
   );
