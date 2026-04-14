@@ -70,7 +70,7 @@ export function ExerciseProgressChart({
   const minWeight = Math.min(...history.map((entry) => entry.max_weight));
 
   return (
-    <Card>
+    <Card className='bg-muted'>
       <CardHeader>Max Weight Progress: {maxWeight}lbs</CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>

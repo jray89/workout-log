@@ -131,9 +131,7 @@ export function ExerciseCard({
                     onChange={(e) =>
                       updateLocalValue(set.id, 'weight', e.target.value)
                     }
-                    onBlur={(e) =>
-                      handleBlur(set.id, 'weight', e.target.value)
-                    }
+                    onBlur={(e) => handleBlur(set.id, 'weight', e.target.value)}
                     disabled={disabled}
                     className='h-8 text-sm'
                   />
@@ -190,7 +188,7 @@ export function ExerciseCard({
         <Button
           variant='ghost'
           size='sm'
-          className='md:hidden w-full'
+          className={`md:hidden w-full ${chartOpen ? 'mb-3' : ''}`}
           onClick={() => setChartOpen((v) => !v)}
         >
           {chartOpen ? (
@@ -200,7 +198,7 @@ export function ExerciseCard({
           )}
           Progress
         </Button>
-        <div className={chartOpen ? 'block mt-2' : 'hidden md:block'}>
+        <div className={chartOpen ? 'block' : 'hidden md:block'}>
           <ExerciseProgressChart exerciseId={wse.exercise.id} />
         </div>
       </div>
