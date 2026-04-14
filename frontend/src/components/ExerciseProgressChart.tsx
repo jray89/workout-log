@@ -7,6 +7,7 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from './ui/chart';
+import { Card, CardContent, CardHeader } from './ui/card';
 
 interface ExerciseProgressChartProps {
   exerciseId: number;
@@ -69,48 +70,48 @@ export function ExerciseProgressChart({
   const minWeight = Math.min(...history.map((entry) => entry.max_weight));
 
   return (
-    <div>
-      <h4 className='text-sm font-semibold mb-2'>
-        Max Weight Progress: {maxWeight}lbs
-      </h4>
-      <ChartContainer config={chartConfig}>
-        <LineChart
-          accessibilityLayer
-          data={chartData}
-          margin={{
-            left: 12,
-            right: 12,
-          }}
-        >
-          <XAxis
-            dataKey='date'
-            tickLine={false}
-            axisLine={false}
-            tickMargin={8}
-            tickCount={4}
-          />
-          <YAxis
-            domain={[minWeight - 5, maxWeight + 5]}
-            tickCount={3}
-            dataKey='weight'
-            tickLine={false}
-            axisLine={false}
-            tickMargin={8}
-            width={24}
-          />
-          <ChartTooltip
-            cursor={false}
-            content={<ChartTooltipContent hideLabel />}
-          />
-          <Line
-            dataKey='weight'
-            type='natural'
-            stroke='var(--color-desktop)'
-            strokeWidth={2}
-            dot={false}
-          />
-        </LineChart>
-      </ChartContainer>
-    </div>
+    <Card>
+      <CardHeader>Max Weight Progress: {maxWeight}lbs</CardHeader>
+      <CardContent>
+        <ChartContainer config={chartConfig}>
+          <LineChart
+            accessibilityLayer
+            data={chartData}
+            margin={{
+              left: 12,
+              right: 12,
+            }}
+          >
+            <XAxis
+              dataKey='date'
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+              tickCount={4}
+            />
+            <YAxis
+              domain={[minWeight - 5, maxWeight + 5]}
+              tickCount={3}
+              dataKey='weight'
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+              width={24}
+            />
+            <ChartTooltip
+              cursor={false}
+              content={<ChartTooltipContent hideLabel />}
+            />
+            <Line
+              dataKey='weight'
+              type='natural'
+              stroke='var(--color-desktop)'
+              strokeWidth={2}
+              dot={false}
+            />
+          </LineChart>
+        </ChartContainer>
+      </CardContent>
+    </Card>
   );
 }
