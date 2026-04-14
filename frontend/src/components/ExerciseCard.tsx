@@ -79,133 +79,131 @@ export function ExerciseCard({
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <div className='flex items-center justify-between'>
-          <div>
-            <CardTitle className='text-base'>{wse.exercise.name}</CardTitle>
-            <div className='flex gap-1 mt-1'>
-              <Badge variant='secondary' className='text-xs'>
-                {wse.exercise.muscle_group}
-              </Badge>
-              <Badge variant='outline' className='text-xs'>
-                {wse.exercise.equipment}
-              </Badge>
-            </div>
-          </div>
-          {!disabled && (
-            <Button
-              variant='ghost'
-              size='icon'
-              className='h-8 w-8 text-destructive'
-              onClick={onRemove}
-            >
-              <Trash2 className='h-4 w-4' />
-            </Button>
-          )}
-        </div>
-      </CardHeader>
-      <CardContent>
-        <div className='md:flex md:flex-row md:gap-4'>
-          <div className='md:flex-1 md:min-w-0'>
-            {wse.sets.length > 0 && (
-              <div className='mb-2'>
-                <div className='grid grid-cols-[2rem_1fr_1fr_2rem_2rem] gap-2 text-xs font-medium text-muted-foreground mb-1'>
-                  <span>Set</span>
-                  <span>Weight</span>
-                  <span>Reps</span>
-                  <span></span>
-                  <span></span>
-                </div>
-                {wse.sets.map((set) => (
-                  <div
-                    key={set.id}
-                    className='grid grid-cols-[2rem_1fr_1fr_2rem_2rem] gap-2 items-center mb-1'
-                  >
-                    <span className='text-sm text-muted-foreground text-center'>
-                      {set.set_number}
-                    </span>
-                    <Input
-                      type='number'
-                      placeholder='lbs'
-                      value={getLocalValue(set.id, 'weight')}
-                      onChange={(e) =>
-                        updateLocalValue(set.id, 'weight', e.target.value)
-                      }
-                      onBlur={(e) =>
-                        handleBlur(set.id, 'weight', e.target.value)
-                      }
-                      disabled={disabled}
-                      className='h-8 text-sm'
-                    />
-                    <Input
-                      type='number'
-                      placeholder='reps'
-                      value={getLocalValue(set.id, 'reps')}
-                      onChange={(e) =>
-                        updateLocalValue(set.id, 'reps', e.target.value)
-                      }
-                      onBlur={(e) => handleBlur(set.id, 'reps', e.target.value)}
-                      disabled={disabled}
-                      className='h-8 text-sm'
-                    />
-                    <Button
-                      variant={set.completed ? 'default' : 'outline'}
-                      size='icon'
-                      className='h-8 w-8'
-                      onClick={() =>
-                        onUpdateSet(set.id, { completed: !set.completed })
-                      }
-                      disabled={disabled}
-                    >
-                      <Check className='h-3 w-3' />
-                    </Button>
-                    {!disabled && (
-                      <Button
-                        variant='ghost'
-                        size='icon'
-                        className='h-8 w-8 text-destructive'
-                        onClick={() => onDeleteSet(set.id)}
-                      >
-                        <Trash2 className='h-3 w-3' />
-                      </Button>
-                    )}
-                  </div>
-                ))}
+    <Card className='md:flex-row'>
+      <div className='flex flex-col gap-4 md:flex-1 md:min-w-0'>
+        <CardHeader>
+          <div className='flex items-center justify-between'>
+            <div>
+              <CardTitle className='text-base'>{wse.exercise.name}</CardTitle>
+              <div className='flex gap-1 mt-1'>
+                <Badge variant='secondary' className='text-xs'>
+                  {wse.exercise.muscle_group}
+                </Badge>
+                <Badge variant='outline' className='text-xs'>
+                  {wse.exercise.equipment}
+                </Badge>
               </div>
-            )}
+            </div>
             {!disabled && (
               <Button
                 variant='ghost'
-                size='sm'
-                className='w-full'
-                onClick={onAddSet}
+                size='icon'
+                className='h-8 w-8 text-destructive'
+                onClick={onRemove}
               >
-                <Plus className='mr-1 h-3 w-3' />
-                Add Set
+                <Trash2 className='h-4 w-4' />
               </Button>
             )}
           </div>
-          <div className='md:flex-1 md:min-w-0'>
+        </CardHeader>
+        <CardContent>
+          {wse.sets.length > 0 && (
+            <div className='mb-2'>
+              <div className='grid grid-cols-[2rem_1fr_1fr_2rem_2rem] gap-2 text-xs font-medium text-muted-foreground mb-1'>
+                <span>Set</span>
+                <span>Weight</span>
+                <span>Reps</span>
+                <span></span>
+                <span></span>
+              </div>
+              {wse.sets.map((set) => (
+                <div
+                  key={set.id}
+                  className='grid grid-cols-[2rem_1fr_1fr_2rem_2rem] gap-2 items-center mb-1'
+                >
+                  <span className='text-sm text-muted-foreground text-center'>
+                    {set.set_number}
+                  </span>
+                  <Input
+                    type='number'
+                    placeholder='lbs'
+                    value={getLocalValue(set.id, 'weight')}
+                    onChange={(e) =>
+                      updateLocalValue(set.id, 'weight', e.target.value)
+                    }
+                    onBlur={(e) =>
+                      handleBlur(set.id, 'weight', e.target.value)
+                    }
+                    disabled={disabled}
+                    className='h-8 text-sm'
+                  />
+                  <Input
+                    type='number'
+                    placeholder='reps'
+                    value={getLocalValue(set.id, 'reps')}
+                    onChange={(e) =>
+                      updateLocalValue(set.id, 'reps', e.target.value)
+                    }
+                    onBlur={(e) => handleBlur(set.id, 'reps', e.target.value)}
+                    disabled={disabled}
+                    className='h-8 text-sm'
+                  />
+                  <Button
+                    variant={set.completed ? 'default' : 'outline'}
+                    size='icon'
+                    className='h-8 w-8'
+                    onClick={() =>
+                      onUpdateSet(set.id, { completed: !set.completed })
+                    }
+                    disabled={disabled}
+                  >
+                    <Check className='h-3 w-3' />
+                  </Button>
+                  {!disabled && (
+                    <Button
+                      variant='ghost'
+                      size='icon'
+                      className='h-8 w-8 text-destructive'
+                      onClick={() => onDeleteSet(set.id)}
+                    >
+                      <Trash2 className='h-3 w-3' />
+                    </Button>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+          {!disabled && (
             <Button
               variant='ghost'
               size='sm'
-              className='md:hidden w-full mt-2'
-              onClick={() => setChartOpen((v) => !v)}
+              className='w-full'
+              onClick={onAddSet}
             >
-              {chartOpen ? (
-                <ChevronUp className='mr-1 h-3 w-3' />
-              ) : (
-                <ChevronDown className='mr-1 h-3 w-3' />
-              )}
-              Progress
+              <Plus className='mr-1 h-3 w-3' />
+              Add Set
             </Button>
-            <div className={chartOpen ? 'block mt-2' : 'hidden md:block'}>
-              <ExerciseProgressChart exerciseId={wse.exercise.id} />
-            </div>
-          </div>
+          )}
+        </CardContent>
+      </div>
+      <div className='px-4 md:flex-1 md:min-w-0 md:pl-0 md:pr-4'>
+        <Button
+          variant='ghost'
+          size='sm'
+          className='md:hidden w-full'
+          onClick={() => setChartOpen((v) => !v)}
+        >
+          {chartOpen ? (
+            <ChevronUp className='mr-1 h-3 w-3' />
+          ) : (
+            <ChevronDown className='mr-1 h-3 w-3' />
+          )}
+          Progress
+        </Button>
+        <div className={chartOpen ? 'block mt-2' : 'hidden md:block'}>
+          <ExerciseProgressChart exerciseId={wse.exercise.id} />
         </div>
-      </CardContent>
+      </div>
     </Card>
   );
 }
