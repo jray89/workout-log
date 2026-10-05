@@ -15,4 +15,7 @@ gem "sqlite3", ">= 2.1", groups: [:development, :test]  # SQLite for local devel
 
 group :development, :test do
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
+  gem "bundler-audit", require: false
+  gem "brakeman", require: false
+  gem "rubocop-rails-omakase", require: false
 end
