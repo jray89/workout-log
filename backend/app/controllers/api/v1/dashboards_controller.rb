@@ -72,7 +72,7 @@ module Api
         qualifying.each_cons(2) do |a, b|
           if (b - a) == 7
             current += 1
-            longest = [longest, current].max
+            longest = [ longest, current ].max
           else
             current = 1
           end
@@ -149,7 +149,7 @@ module Api
           end
         end
 
-        prs.sort_by { |pr| [pr[:date], pr[:weight]] }.reverse.first(5)
+        prs.sort_by { |pr| [ pr[:date], pr[:weight] ] }.reverse.first(5)
       end
 
       # ---------------------------------------------------------------------------
@@ -177,7 +177,7 @@ module Api
           .where(completed_at: start_time..Time.now.utc)
           .pluck(:completed_at)
           .each_with_object(Hash.new(0)) { |ts, h| h[ts.utc.to_date.to_s] += 1 }
-      
+
         start_date = start_time.to_date
         (start_date..Date.current).map do |d|
           { date: d.to_s, count: counts[d.to_s] || 0 }

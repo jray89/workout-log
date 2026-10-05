@@ -1,0 +1,9 @@
+alice_push:
+  user: alice
+  name: Push Day
+  session_type: strength
+
+bob_legs:
+  user: bob
+  name: Leg Day
+  session_type: strength

@@ -1,7 +1,7 @@
 module Api
   module V1
     class ExercisesController < ApplicationController
-      before_action :require_admin!, only: [:create]
+      before_action :require_admin!, only: [ :create ]
 
       def index
         exercises = Exercise.order(:muscle_group, :name)

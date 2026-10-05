@@ -1,0 +1,9 @@
+alice_bench:
+  workout_session: alice_push
+  exercise: bench
+  position: 1
+
+bob_squat:
+  workout_session: bob_legs
+  exercise: squat
+  position: 1
