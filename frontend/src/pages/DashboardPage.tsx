@@ -56,32 +56,28 @@ export function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [statsLoading, setStatsLoading] = useState(true);
 
-  const fetchSessions = useCallback(async () => {
-    try {
-      const data = await api.getWorkoutSessions();
-      setSessions(data);
-    } catch {
-      // handled by api client
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  const fetchStats = useCallback(async () => {
-    try {
-      const data = await api.getDashboardStats();
-      setStats(data);
-    } catch {
-      // non-critical — stats section stays hidden
-    } finally {
-      setStatsLoading(false);
-    }
-  }, []);
+  const fetchStats = useCallback(
+    () =>
+      api
+        .getDashboardStats()
+        .then(setStats)
+        .catch(() => {
+          // non-critical — stats section stays hidden
+        })
+        .finally(() => setStatsLoading(false)),
+    []
+  );
 
   useEffect(() => {
-    fetchSessions();
+    api
+      .getWorkoutSessions()
+      .then(setSessions)
+      .catch(() => {
+        // handled by api client
+      })
+      .finally(() => setLoading(false));
     fetchStats();
-  }, [fetchSessions, fetchStats]);
+  }, [fetchStats]);
 
   async function startNewWorkout() {
     const session = await api.createWorkoutSession({
