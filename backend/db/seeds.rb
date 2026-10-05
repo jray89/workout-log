@@ -22,7 +22,7 @@ exercises = [
   { name: "Machine Chest Fly", muscle_group: "Chest", equipment: "Machine" },
   { name: "Leg Extension", muscle_group: "Legs", equipment: "Machine" },
   { name: "Hyperextension", muscle_group: "Back", equipment: "Machine" },
-  { name: "Cable Curl", muscle_group: "Biceps", equipment: "Cable" }, 
+  { name: "Cable Curl", muscle_group: "Biceps", equipment: "Cable" }
 ]
 
 exercises.each do |attrs|
