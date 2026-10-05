@@ -20,7 +20,7 @@ RUN apt-get update -qq && \
 ENV RAILS_ENV="production" \
     BUNDLE_DEPLOYMENT="1" \
     BUNDLE_PATH="/usr/local/bundle" \
-    BUNDLE_WITHOUT="development" \
+    BUNDLE_WITHOUT="development:test" \
     LD_PRELOAD="/usr/local/lib/libjemalloc.so"
 
 # Throw-away build stage to reduce size of final image
@@ -45,8 +45,9 @@ COPY backend/ .
 # Build frontend and copy to public
 COPY frontend/ /frontend
 RUN cd /frontend && \
-    npm install && \
-    npm run build && \
+    corepack enable && \
+    pnpm install --frozen-lockfile && \
+    pnpm run build && \
     mkdir -p /rails/public && \
     cp -r dist/* /rails/public/
 
