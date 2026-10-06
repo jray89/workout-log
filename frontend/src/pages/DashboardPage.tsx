@@ -129,6 +129,10 @@ export function DashboardPage() {
   const lastWeekVol = stats?.weekly_stats.last_week_volume ?? 0;
   const volDelta =
     lastWeekVol > 0 ? ((thisWeekVol - lastWeekVol) / lastWeekVol) * 100 : 0;
+  const showWorkoutHeatmap =
+    !statsLoading && stats && stats.activity.length > 0;
+  const showMuscleGroupChart =
+    !statsLoading && stats && stats.muscle_groups.length > 0;
 
   return (
     <div className='mx-auto max-w-2xl'>
@@ -174,13 +178,13 @@ export function DashboardPage() {
 
       <div className='p-4 space-y-4'>
         {/* Activity Heatmap */}
-        <div className='grid grid-cols-1 gap-3 md:grid-cols-2'>
-          {!statsLoading && stats && stats.activity.length > 0 && (
-            <WorkoutHeatmap activity={stats.activity} />
-          )}
+        <div
+          className={`grid grid-cols-1 gap-3 ${showMuscleGroupChart ? 'md:grid-cols-2' : ''}`}
+        >
+          {showWorkoutHeatmap && <WorkoutHeatmap activity={stats.activity} />}
 
           {/* Muscle Group Balance */}
-          {!statsLoading && stats && stats.muscle_groups.length > 0 && (
+          {showMuscleGroupChart && (
             <Card>
               <CardHeader>
                 <CardTitle className='text-base font-semibold'>
@@ -334,7 +338,7 @@ export function DashboardPage() {
                     </p>
                   ) : (
                     <p className='text-xs text-muted-foreground'>
-                      No volume logged yet
+                      No volume logged
                     </p>
                   )}
                   <p className='text-xs text-muted-foreground'>
