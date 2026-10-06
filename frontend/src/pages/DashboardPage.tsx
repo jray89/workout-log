@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { SessionCard } from '@/components/SessionCard';
 import { WorkoutHeatmap } from '@/components/WorkoutHeatmap';
+import { getMilestoneInfo, formatVolume } from '@/lib/stats';
 import {
   ChartContainer,
   ChartTooltip,
@@ -27,27 +28,6 @@ import {
   Hash,
 } from 'lucide-react';
 
-const MILESTONES = [
-  10, 25, 50, 75, 100, 125, 150, 175, 200, 225, 250, 275, 300, 325, 350, 375,
-  400, 425, 450, 475, 500,
-];
-
-function getMilestoneInfo(total: number): {
-  reached: number | null;
-  next: number | null;
-  nearNext: boolean;
-} {
-  const reached = [...MILESTONES].reverse().find((m) => m <= total) ?? null;
-  const next = MILESTONES.find((m) => m > total) ?? null;
-  const nearNext = next !== null && next - total <= 5;
-  return { reached, next, nearNext };
-}
-
-function formatVolume(lbs: number): string {
-  if (lbs >= 1000) return `${(lbs / 1000).toFixed(1)}k`;
-  return lbs.toFixed(0);
-}
-
 export function DashboardPage() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -56,32 +36,28 @@ export function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [statsLoading, setStatsLoading] = useState(true);
 
-  const fetchSessions = useCallback(async () => {
-    try {
-      const data = await api.getWorkoutSessions();
-      setSessions(data);
-    } catch {
-      // handled by api client
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  const fetchStats = useCallback(async () => {
-    try {
-      const data = await api.getDashboardStats();
-      setStats(data);
-    } catch {
-      // non-critical — stats section stays hidden
-    } finally {
-      setStatsLoading(false);
-    }
-  }, []);
+  const fetchStats = useCallback(
+    () =>
+      api
+        .getDashboardStats()
+        .then(setStats)
+        .catch(() => {
+          // non-critical — stats section stays hidden
+        })
+        .finally(() => setStatsLoading(false)),
+    []
+  );
 
   useEffect(() => {
-    fetchSessions();
+    api
+      .getWorkoutSessions()
+      .then(setSessions)
+      .catch(() => {
+        // handled by api client
+      })
+      .finally(() => setLoading(false));
     fetchStats();
-  }, [fetchSessions, fetchStats]);
+  }, [fetchStats]);
 
   async function startNewWorkout() {
     const session = await api.createWorkoutSession({

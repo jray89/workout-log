@@ -19,7 +19,9 @@ backend/.env*.local
 # Frontend
 frontend/node_modules/
 frontend/dist/
-backend/public/  # Built frontend files (generated during deployment)
+# Built frontend files (copied in during the Docker build)
+backend/public/*
+!backend/public/robots.txt
 
 # Deployment packages
 deployment-*.tar.gz
@@ -42,3 +44,7 @@ SECURITY.md
 scripts/deploy-cpanel.md
 scripts/prepare-deployment.sh
 scripts/prepare-railway.sh
+
+# Tooling caches
+frontend/.vite/
+.claude/worktrees/

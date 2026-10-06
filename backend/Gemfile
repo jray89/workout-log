@@ -11,8 +11,11 @@ gem "bootsnap", require: false
 
 # Database gems
 gem "pg", "~> 1.5"  # PostgreSQL for production (Railway/Render)
-gem "sqlite3", ">= 2.1", groups: [:development, :test]  # SQLite for local development
+gem "sqlite3", ">= 2.1", groups: [ :development, :test ]  # SQLite for local development
 
 group :development, :test do
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
+  gem "bundler-audit", require: false
+  gem "brakeman", require: false
+  gem "rubocop-rails-omakase", require: false
 end

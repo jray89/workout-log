@@ -7,7 +7,7 @@ Workout-log is a personal workout tracking app. Users log workout sessions, add 
 - **Backend**: Ruby on Rails 8.1 API-only app (`backend/`)
 - **Frontend**: React 19 + TypeScript SPA with Tailwind CSS and shadcn/ui (`frontend/`)
 - **Database**: SQLite3 (dev/test), PostgreSQL (production)
-- **Deployment**: Railway via Docker multi-stage build. Domain: workoutlog.jasonray.me
+- **Deployment**: Railway via Docker multi-stage build
 
 ## Development Setup
 
@@ -37,13 +37,19 @@ cd backend && rails console             # Rails console
 cd backend && rake admin:grant[user@example.com]   # Make a user admin
 cd backend && rake admin:revoke[user@example.com]   # Remove admin
 
+# Backend checks
+cd backend && bin/rails test            # Minitest (models, services, integration)
+cd backend && bin/rubocop               # Style
+cd backend && bin/brakeman              # Security static analysis
+cd backend && bin/bundler-audit         # Vulnerable gem check
+
 # Frontend
 cd frontend && pnpm dev                 # Dev server with HMR
 cd frontend && pnpm build               # Production build (tsc + vite)
 cd frontend && pnpm lint                # ESLint
+cd frontend && pnpm test                # Vitest
 
-# Production build (copies frontend into backend/public/)
-./scripts/build-frontend.sh
+# Production: the Dockerfile builds the frontend and copies it into Rails public/
 ```
 
 ## Architecture
@@ -105,8 +111,9 @@ All controllers scope queries to `current_user` — users only see their own dat
 
 ### Frontend Structure
 - `src/App.tsx` — routes with `ProtectedRoute` / `GuestRoute` wrappers
-- `src/hooks/useAuth.tsx` — auth context (user state, login/signup/logout)
+- `src/hooks/useAuth.ts` / `useTheme.ts` — contexts + hooks; providers live in `src/components/auth-provider.tsx` / `theme-provider.tsx` (keep components and non-components in separate files for Fast Refresh)
 - `src/lib/api.ts` — API client + all TypeScript interfaces
+- `src/lib/stats.ts`, `src/lib/timeUtils.ts` — pure helpers, unit-tested with Vitest
 - `src/pages/` — DashboardPage, WorkoutPage, LoginPage, SignupPage, SettingsPage
 - `src/components/` — SessionCard, ExerciseCard, ExerciseHistoryCard, WorkoutHeatmap
 - `src/components/ui/` — shadcn/ui primitives (button, card, input, etc.)
@@ -116,7 +123,9 @@ All controllers scope queries to `current_user` — users only see their own dat
 Controllers use inline `*_json` helper methods (e.g. `session_json`, `user_json`) — no serializer gem. Keep this pattern when adding new endpoints.
 
 ## Conventions
-- No test suite yet — no tests to run
+- Backend tests in `backend/test/` (Minitest + fixtures); request tests use `auth_headers(user)` from `test_helper.rb`. Add a cross-user 404 test for any new user-owned resource
+- Frontend unit tests sit next to the code as `*.test.ts` (Vitest, jsdom)
+- CI (`.github/workflows/ci.yml`) runs rubocop, brakeman, bundler-audit, rails test, and pnpm lint/test/build
 - No serializer library — use inline `*_json` methods in controllers
 - Seeds only populate the built-in exercise library (not users)
 - Frontend uses Vite dev proxy (`/api` -> `localhost:3000`)

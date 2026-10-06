@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Sun, Moon, Monitor } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useTheme } from '@/components/theme-provider';
+import { useTheme } from '@/hooks/useTheme';
 import { api, type UserPreference } from '@/lib/api';
 import { cn } from '@/lib/utils';
 

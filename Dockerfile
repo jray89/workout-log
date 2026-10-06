@@ -20,7 +20,7 @@ RUN apt-get update -qq && \
 ENV RAILS_ENV="production" \
     BUNDLE_DEPLOYMENT="1" \
     BUNDLE_PATH="/usr/local/bundle" \
-    BUNDLE_WITHOUT="development" \
+    BUNDLE_WITHOUT="development:test" \
     LD_PRELOAD="/usr/local/lib/libjemalloc.so"
 
 # Throw-away build stage to reduce size of final image
@@ -29,7 +29,7 @@ FROM base AS build
 # Install packages needed to build gems and Node.js
 RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y build-essential git libyaml-dev pkg-config && \
-    curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
     apt-get install -y nodejs && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
@@ -45,8 +45,9 @@ COPY backend/ .
 # Build frontend and copy to public
 COPY frontend/ /frontend
 RUN cd /frontend && \
-    npm install && \
-    npm run build && \
+    corepack enable && \
+    pnpm install --frozen-lockfile && \
+    pnpm run build && \
     mkdir -p /rails/public && \
     cp -r dist/* /rails/public/
 

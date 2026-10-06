@@ -1,0 +1,9 @@
+bench:
+  name: Bench Press
+  muscle_group: Chest
+  equipment: Barbell
+
+squat:
+  name: Squat
+  muscle_group: Legs
+  equipment: Barbell
